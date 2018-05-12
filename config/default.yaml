@@ -5,3 +5,5 @@ redis:
   expireTime: 86400000
 
 port: 8000
+socket:
+  port: 8001
