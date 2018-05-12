@@ -1,8 +1,10 @@
 ###
-write redis config in config/default.yaml or config/production.js, depend on your env.
+write redis config in config/default.yaml or config/production.js, which depend on your NODE_ENV.
 
 ###
 ``` shell
 npm run init
-node index.js
+npm run dev
 ```
+
+open localhost:8000/index.html

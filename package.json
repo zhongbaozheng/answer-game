@@ -4,7 +4,7 @@
   "description": "the backend of my blog",
   "main": "index.js",
   "scripts": {
-    "init": "yarn && ln -nsf ../ node_modules/app",
+    "init": "npm install",
     "dev": "node_modules/nodemon/bin/nodemon.js index.js"
   },
   "author": "chenquincy",
