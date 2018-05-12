@@ -1,0 +1,37 @@
+{
+  "name": "myblog-backend",
+  "version": "1.0.0",
+  "description": "the backend of my blog",
+  "main": "index.js",
+  "scripts": {
+    "init": "yarn && ln -nsf ../ node_modules/app",
+    "dev": "node_modules/nodemon/bin/nodemon.js index.js"
+  },
+  "author": "chenquincy",
+  "license": "ISC",
+  "dependencies": {
+    "bluebird": "^3.5.0",
+    "config": "^1.26.1",
+    "http": "^0.0.0",
+    "ioredis": "^3.1.4",
+    "js-yaml": "^3.9.0",
+    "kcors": "^2.2.1",
+    "koa": "^2.3.0",
+    "koa-bodyparser": "^4.2.0",
+    "koa-compose": "^4.0.0",
+    "koa-logger": "^3.0.1",
+    "koa-router": "^7.2.1",
+    "koa-static": "^4.0.2",
+    "require-dir": "^0.3.2",
+    "socket.io": "^2.1.0"
+  },
+  "devDependencies": {
+    "eslint": "^4.9.0",
+    "eslint-config-standard": "^10.2.1",
+    "eslint-plugin-import": "^2.7.0",
+    "eslint-plugin-node": "^5.2.0",
+    "eslint-plugin-promise": "^3.6.0",
+    "eslint-plugin-standard": "^3.0.1",
+    "nodemon": "^1.11.0"
+  }
+}
