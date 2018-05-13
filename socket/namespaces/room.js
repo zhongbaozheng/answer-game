@@ -23,18 +23,21 @@ module.exports = (io, roomId) => {
     // 用户完成对战所有题目
     socket.on('finish', (data) => {
       room.users.delete(data.userId)
+      room.requestUserId = room.requestUserId || data.userId
       if (room.users.size === 0 && room.begin === true) {
-        room.emit('over', { opponentQuit: false })
+        room.emit('over', { opponentQuit: false, requestUserId: room.requestUserId })
       }
     })
     // 用户中途退出房间
     socket.on('quit', (data) => {
       room.users.delete(data.userId)
-      room.emit('over', { opponentQuit: true })
+      room.requestUserId = room.users.values().next().value
+      room.emit('over', { opponentQuit: true, requestUserId: room.requestUserId })
     })
     // 用户断开连接
     socket.on('disconnect', async () => {
-      room.emit('over', { opponentQuit: true })
+      room.requestUserId = room.users.values().next().value
+      room.emit('over', { opponentQuit: true, requestUserId: room.requestUserId })
     })
   })
 }
