@@ -4,7 +4,7 @@
       <div class="me">
         <div class="avatar">
           <md-avatar class="md-large">
-            <img src="@/assets/avatar.png" alt="Avatar">
+            <img src="@/assets/logo.png" alt="Avatar">
           </md-avatar>
         </div>
         <span>王媛媛</span>
