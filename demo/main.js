@@ -1,4 +1,5 @@
 /* eslint-disable */
+var chapterId = 1
 var roomId, playRoom, playing = false, rightCount = 0, opponentRightCount = 0
 var matchRoom = io('http://localhost:8001/match')
 matchRoom.on('success', function (data) {
@@ -12,7 +13,8 @@ matchRoom.on('success', function (data) {
   })
   setTimeout(() => {
     // 用户准备就绪
-    playRoom.emit('ready', { userId })
+    console.log('ready ', { userId, chapterId })
+    playRoom.emit('ready', { userId, chapterId })
   }, 1000)
   // 开始对战
   playRoom.on('begin', function () {
@@ -38,12 +40,12 @@ function match () {
   console.log('matching ...')
   matchRoom.open()
   // 开始匹配
-  matchRoom.emit('start', { userId, chapterId: 'test' })
+  matchRoom.emit('start', { userId, chapterId })
 }
 function cancelMatch () {
   console.log('cancel match')
   matchRoom.disconnect()
   // 取消匹配
-  matchRoom.emit('cancel', { userId, chapterId: 'test' })
+  matchRoom.emit('cancel', { userId, chapterId })
 }
 /* eslint-disabled */

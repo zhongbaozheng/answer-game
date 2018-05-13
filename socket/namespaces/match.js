@@ -37,7 +37,7 @@ module.exports = (io) => {
       }
       // 随机获取一个匹配中用户
       const userId = await getMatchingUser(data.chapterId)
-      if (userId && userId !== data.userId) {
+      if (userId && Number(userId) !== data.userId) {
         // 创建房间
         const roomId = uuid.v4()
         Room(io, roomId)

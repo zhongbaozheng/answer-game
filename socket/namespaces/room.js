@@ -1,3 +1,4 @@
+const request = require('request-promise')
 
 module.exports = (io, roomId) => {
   const room = io.of(`/room/${roomId}`)
@@ -6,13 +7,29 @@ module.exports = (io, roomId) => {
 
   room.on('connect', (socket) => {
     // 用户加载完成
-    socket.on('ready', (data) => {
+    socket.on('ready', async (data) => {
       // 将userId添加到房间中
       room.users.add(data.userId)
       // 当房间内人数达到两人时开启游戏
       if (room.users.size === 2 && room.begin === false) {
         room.begin = true
-        room.emit('begin')
+        const getFunc = room.users.values()
+        const options = {
+          playerOne: Number(getFunc.next().value),
+          playerTwo: Number(getFunc.next().value),
+          chapterId: data.chapterId
+        }
+        try {
+          const result = await request({
+            method: 'POST',
+            uri: 'http://brain.vipgz1.idcfengye.com/brain/getQuestions',
+            body: options,
+            json: true
+          })
+          room.emit('begin', result.data)
+        } catch (e) {
+          console.log(e)
+        }
       }
     })
     // 用户回答问题
