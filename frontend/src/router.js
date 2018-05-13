@@ -7,6 +7,7 @@ import TopicChosen from './views/TopicChosen.vue';
 import Battle from './views/Battle.vue';
 import Record from './views/Record.vue';
 import Personal from './views/Personal.vue';
+import Ranking from './views/Ranking.vue';
 
 Vue.use(Router);
 
@@ -46,6 +47,11 @@ export default new Router({
       path: '/record',
       name: 'record',
       component: Record,
+    },
+    {
+      path: '/ranking',
+      name: 'ranking',
+      component: Ranking,
     },
   ],
 });
