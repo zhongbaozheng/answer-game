@@ -37,7 +37,7 @@ export default {
       });
     });
 
-    this.matchRoom = io('http://121.42.37.233:8010/match');
+    this.matchRoom = io('http://localhost:8001/match');
     this.matchRoom.on('success', data => {
       console.log(data);
       if (data.userIds
