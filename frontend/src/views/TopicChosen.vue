@@ -7,7 +7,7 @@
     <person-card></person-card>
     <md-tabs class="md-primary md-elevation-2" md-alignment="centered">
       <md-tab v-for="course in courses" :id="course.courseId" :md-label="course.course">
-        <md-button class="md-raised md-primary" v-for="chapter in course.chapters" to="/competition">{{chapter.chapter}}</md-button>
+        <md-button class="md-raised md-primary" v-for="chapter in course.chapters" to="/battle">{{chapter.chapter}}</md-button>
       </md-tab>
     </md-tabs>
   </div>
