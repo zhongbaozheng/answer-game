@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <style>
+    .button {
+      margin: 10px 0;
+      padding: 10px 0;
+      width: 80px;
+      background: #ccc;
+      border-radius: 5px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="button" onclick="match()">匹配</div>
+  <div class="button" onclick="cancelMatch()">取消匹配</div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.0/socket.io.js"></script>
+  <script>
+    var userId = 'user2'
+  </script>
+  <script src="./main.js"></script>
+  <script>
+    var intId = window.setInterval(function () {
+      if (playRoom && playing) {
+        if (rightCount < 5) {
+          rightCount++
+          playRoom.emit('answer', { questionId: 'test', answer: 'A' })
+          console.log('answer question')
+        } else {
+          playRoom.emit('finish', { userId })
+          console.log('finish questions')
+          window.clearInterval(intId)
+        }
+      }
+    }, 3000)
+  </script>
+</body>
+</html>
