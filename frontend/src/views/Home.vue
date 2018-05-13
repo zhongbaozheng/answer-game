@@ -1,11 +1,11 @@
 <template>
   <div class="home">
     <div class="md-layout">
-      <p>通信工知识竞技对战平台</p>
+      <div>通信工知识竞技对战平台</div>
     </div>
     <person-card></person-card>
     <md-button class="md-raised md-primary link" to="/topic-chosen">双人对战</md-button>
-    <md-button class="md-raised md-primary link">战绩</md-button>
+    <md-button class="md-raised md-primary link" to="/record">战绩</md-button>
     <md-button class="md-raised md-primary link">排名</md-button>
   </div>
 </template>

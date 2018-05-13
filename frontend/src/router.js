@@ -5,6 +5,7 @@ import Login from './views/Login.vue';
 import Register from './views/Register.vue';
 import TopicChosen from './views/TopicChosen.vue';
 import Battle from './views/Battle.vue';
+import Record from './views/Record.vue';
 
 Vue.use(Router);
 
@@ -34,6 +35,11 @@ export default new Router({
       path: '/battle',
       name: 'battle',
       component: Battle,
+    },
+    {
+      path: '/record',
+      name: 'record',
+      component: Record,
     },
   ],
 });

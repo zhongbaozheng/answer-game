@@ -5,26 +5,38 @@
         <img src="@/assets/avatar.png" alt="Avatar">
       </md-avatar>
       <div class="name">王媛媛 32号</div>
-      <div class="level">
-        <span>等级</span>
-        <div class="exp">
-          <div class="exp-fill" :style="{width: amount + '%'}"></div>
-        </div>
-        <span>400 3级</span>
-      </div>
+      <!--<div class="level">-->
+        <!--<span>等级</span>-->
+        <!--<div class="exp">-->
+          <!--<div class="exp-fill" :style="{width: amount + '%'}"></div>-->
+        <!--</div>-->
+        <!--<span>400 3级</span>-->
+      <!--</div>-->
     </md-card-content>
     <md-card-actions>
       <md-button to="/personal">修改资料</md-button>
+      <md-button @click="logout()" class="md-accent md-raised">退出登录</md-button>
     </md-card-actions>
   </md-card>
 </template>
 
 <script>
+import {mapState} from 'vuex';
+
 export default {
   name: 'person-card',
+  computed: mapState({
+    user: state => state.user,
+  }),
   data: () => ({
     amount: 50
-  })
+  }),
+  methods: {
+    logout() {
+      this.$store.commit('setUser', null);
+      this.$router.replace('/login');
+    }
+  }
 };
 </script>
 

@@ -16,7 +16,7 @@
       <div class="opponent">
         <div class="avatar">
           <md-avatar class="md-large">
-            <img src="@/assets/avatar.png" alt="Avatar">
+            <img src="@/assets/logo.png" alt="Avatar">
           </md-avatar>
         </div>
         <span>王媛媛</span>
@@ -70,7 +70,7 @@ export default {
     color: #fff;
 
     .header {
-      margin-top: 20px;
+      margin: 20px 0;
       display: flex;
       justify-content: space-between;
 
