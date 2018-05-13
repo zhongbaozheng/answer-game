@@ -10,7 +10,6 @@ cd frontend
 npm i
 npm run build
 ```
-4. move the whole ```/frontend/dist``` directory as the directory ```/public```
 
 
 backend config
