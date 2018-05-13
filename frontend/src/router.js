@@ -6,6 +6,7 @@ import Register from './views/Register.vue';
 import TopicChosen from './views/TopicChosen.vue';
 import Battle from './views/Battle.vue';
 import Record from './views/Record.vue';
+import Personal from './views/Personal.vue';
 
 Vue.use(Router);
 
@@ -25,6 +26,11 @@ export default new Router({
       path: '/register',
       name: 'register',
       component: Register,
+    },
+    {
+      path: '/personal',
+      name: 'personal',
+      component: Personal,
     },
     {
       path: '/topic-chosen',
