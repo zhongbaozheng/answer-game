@@ -6,32 +6,45 @@
     <md-card-content>
       <div class="md-layout md-size-75 md-alignment-center">
         <md-field class="md-layout-item md-size-75">
-          <label>用户名/学号</label>
-          <md-input v-model="username"></md-input>
+          <label>昵称</label>
+          <md-input v-model="nickname"></md-input>
         </md-field>
         <md-field class="md-layout-item md-size-75">
           <label>密码</label>
           <md-input v-model="password" type="password"></md-input>
         </md-field>
-        <md-field class="md-layout-item md-size-75">
-          <label>确认密码</label>
-          <md-input v-model="password" type="password"></md-input>
-        </md-field>
-        <md-button class="md-raised md-primary md-layout-item md-size-75">注册</md-button>
+        <md-button :disabled="!nickname || !password" @click="register()" class="md-raised md-primary md-layout-item md-size-75">注册</md-button>
         <md-button to="/login" class="md-flat md-primary md-layout-item md-size-75">已有账号？</md-button>
       </div>
     </md-card-content>
+    <md-snackbar md-position="left" :md-duration="2000" :md-active.sync="showSnack" md-persistent>
+      <span>注册成功，即将跳转至登录页面…</span>
+    </md-snackbar>
   </md-card>
 </template>
 
 <script>
 
 export default {
-    name: 'register',
-    data: () => ({
-        username: '',
-        password: ''
-    })
+  name: 'register',
+  data: () => ({
+    nickname: '',
+    password: '',
+    showSnack: false
+  }),
+  methods: {
+    register() {
+      this.$http.post('/user/save', {
+        nickname: this.nickname,
+        password: this.password
+      }).then(data => {
+        this.showSnack = true;
+        window.setTimeout(() => {
+          this.$router.push('/login');
+        }, 2000);
+      })
+    }
+  },
 };
 </script>
 

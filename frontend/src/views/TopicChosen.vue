@@ -1,53 +1,76 @@
 <template>
-  <div class="home">
-    <div class="header md-layout md-alignment-center-left">
+  <div class="topic-chosen">
+    <div @click="goBack()" class="header md-layout md-alignment-center-left">
       <icon name="angle-left" scale="2"></icon>
       <span class="text">双人对战</span>
     </div>
     <person-card></person-card>
-    <md-tabs class="md-primary md-elevation-2" md-alignment="centered">
-      <md-tab v-for="course in courses" :id="course.courseId" :md-label="course.course">
-        <md-button class="md-raised md-primary" v-for="chapter in course.chapters" to="/battle">{{chapter.chapter}}</md-button>
-      </md-tab>
-    </md-tabs>
+    <md-list class="md-elevation-2">
+      <md-list-item v-for="course in courses" :key="course.courseId" md-expand>
+        <span class="md-list-item-text">{{course.course}}</span>
+        <md-list slot="md-expand">
+          <md-list-item :key="chapter.chapterId" @click="startBattle(chapter.chapterId)" v-for="chapter in course.chapters" class="md-inset">{{chapter.chapter}}</md-list-item>
+        </md-list>
+      </md-list-item>
+    </md-list>
+    <md-dialog :md-active.sync="showMatching">
+      <md-dialog-title>正在寻找与你实力相当的对手……</md-dialog-title>
+      <md-dialog-actions>
+        <md-button class="md-primary" @click="cancelMatch()">退出匹配</md-button>
+      </md-dialog-actions>
+    </md-dialog>
   </div>
 </template>
 
 <script>
 // @ is an alias to /src
 import PersonCard from "../components/PersonCard.vue";
+import io from 'socket.io-client';
 
 export default {
   components: {PersonCard},
-  name: 'home',
+  name: 'topic-chosen',
+  mounted () {
+    this.$http.post('/question/getCourseAndChapter').then(data => {
+      this.courses = data.filter(el => {
+        return el.chapters.length;
+      });
+    });
+
+    this.matchRoom = io('http://121.42.37.233:8010/match');
+    this.matchRoom.on('success', data => {
+      console.log(data);
+      const userIds = data.userIds.map(id => parseInt(id));
+      const idIndex = userIds.findIndex(v => v === this.$store.state.user.uid);
+      if (idIndex !== -1) {
+        this.$router.push({ path: 'battle', query: { roomId: data.roomId, opponentId: userIds[1-idIndex] }});
+      }
+    })
+  },
+  methods: {
+    startBattle (id) {
+      if (this.matchingId) return;
+      this.matchRoom.open();
+      this.matchRoom.emit('start', { userId: this.$store.state.user.uid, chapterId: id });
+      this.matchingId = id;
+      this.showMatching = true;
+    },
+    cancelMatch () {
+      this.matchRoom.disconnect();
+      this.matchRoom.emit('cancel', { userId: this.$store.state.user.uid, chapterId: this.matchingId });
+      this.matchingId = '';
+      this.showMatching = false;
+    },
+    goBack () {
+      this.$router.back();
+    }
+  },
   data: () => ({
     amount: 50,
-    courses: [
-      {
-        courseId: '1',
-        course: '123',
-        chapters: [
-          {
-            chapter: '123'
-          },
-          {
-            chapter: '123'
-          },
-        ]
-      },
-      {
-        courseId: '2',
-        course: '123',
-        chapters: [
-          {
-            chapter: '123'
-          },
-          {
-            chapter: '123'
-          },
-        ]
-      }
-    ]
+    courses: [],
+    showDialog: false,
+    showMatching: false,
+    matchingId: ''
   })
 };
 </script>
@@ -57,5 +80,9 @@ export default {
     .text {
       margin-left: 10px;
     }
+  }
+
+  .md-list {
+    margin: 8px;
   }
 </style>
