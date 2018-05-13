@@ -24,12 +24,13 @@ matchRoom.on('success', function (data) {
     opponentRightCount++
   })
   // 对战结束
-  playRoom.on('over', function () {
+  playRoom.on('over', function (data) {
     if (rightCount >= opponentRightCount) {
       console.log('you win')
     } else {
       console.log('you lose')
     }
+    // TODO: data.requestUserId === userId的话上传答题数据
     playRoom.disconnect(true)
   })
 })
