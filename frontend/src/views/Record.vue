@@ -1,6 +1,6 @@
 <template>
   <div class="record">
-    <div class="header md-layout md-alignment-center-left">
+    <div @click="goBack()" class="header md-layout md-alignment-center-left">
       <icon name="angle-left" scale="2"></icon>
       <span class="text">战绩</span>
     </div>
@@ -15,7 +15,12 @@ import PersonCard from '@/components/PersonCard.vue';
 
 export default {
   components: {PersonCard},
-  name: 'home'
+  name: 'record',
+  methods: {
+    goBack () {
+      this.$router.back();
+    }
+  },
 };
 </script>
 

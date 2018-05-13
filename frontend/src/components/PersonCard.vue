@@ -2,9 +2,9 @@
   <md-card class="md-primary">
     <md-card-content>
       <md-avatar class="md-large">
-        <img src="@/assets/avatar.png" alt="Avatar">
+        <img src="@/assets/logo.png" alt="Avatar">
       </md-avatar>
-      <div class="name">王媛媛 32号</div>
+      <div class="name">{{user.nickname}}</div>
       <!--<div class="level">-->
         <!--<span>等级</span>-->
         <!--<div class="exp">-->

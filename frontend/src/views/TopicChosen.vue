@@ -1,15 +1,18 @@
 <template>
-  <div class="home">
-    <div class="header md-layout md-alignment-center-left">
+  <div class="topic-chosen">
+    <div @click="goBack()" class="header md-layout md-alignment-center-left">
       <icon name="angle-left" scale="2"></icon>
       <span class="text">双人对战</span>
     </div>
     <person-card></person-card>
-    <md-tabs class="md-primary md-elevation-2" md-alignment="centered">
-      <md-tab v-for="course in courses" :id="course.courseId" :md-label="course.course">
-        <md-button class="md-raised md-primary" v-for="chapter in course.chapters" to="/battle">{{chapter.chapter}}</md-button>
-      </md-tab>
-    </md-tabs>
+    <md-list class="md-elevation-2">
+      <md-list-item v-for="course in courses" md-expand>
+        <span class="md-list-item-text">{{course.course}}</span>
+        <md-list slot="md-expand">
+          <md-list-item @click="startBattle(chapter.chapterId)" v-for="chapter in course.chapters" class="md-inset">{{chapter.chapter}}</md-list-item>
+        </md-list>
+      </md-list-item>
+    </md-list>
   </div>
 </template>
 
@@ -19,35 +22,25 @@ import PersonCard from "../components/PersonCard.vue";
 
 export default {
   components: {PersonCard},
-  name: 'home',
+  name: 'topic-chosen',
+  mounted () {
+    this.$http.post('/question/getCourseAndChapter').then(data => {
+      this.courses = data.filter(el => {
+        return el.chapters.length;
+      });
+    })
+  },
+  methods: {
+    startBattle (id) {
+      console.log(id);
+    },
+    goBack () {
+      this.$router.back();
+    }
+  },
   data: () => ({
     amount: 50,
-    courses: [
-      {
-        courseId: '1',
-        course: '123',
-        chapters: [
-          {
-            chapter: '123'
-          },
-          {
-            chapter: '123'
-          },
-        ]
-      },
-      {
-        courseId: '2',
-        course: '123',
-        chapters: [
-          {
-            chapter: '123'
-          },
-          {
-            chapter: '123'
-          },
-        ]
-      }
-    ]
+    courses: []
   })
 };
 </script>
@@ -57,5 +50,9 @@ export default {
     .text {
       margin-left: 10px;
     }
+  }
+
+  .md-list {
+    margin: 8px;
   }
 </style>
