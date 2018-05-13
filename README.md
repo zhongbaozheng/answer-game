@@ -1,5 +1,6 @@
-###
+### 
 frontend build
+---
  
 1. modify the api root of backend address in ```/frontend/src/http.js line 5``` ;
 2. modify the socket address in ```/frontend/src/views/TopicChosen.vue line 40``` and ```/frontend/src/views/Battle.vue line 104```
@@ -12,6 +13,8 @@ npm run build
 4. move the whole ```/frontend/dist``` directory to the ```/public```
 
 
+backend config
+---
 ###
 write redis config in config/default.yaml or config/production.js, which depend on your NODE_ENV.
 
