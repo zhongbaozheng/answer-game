@@ -1,60 +1,203 @@
 <template>
-  <div class="battle md-elevation-2">
-    <div class="header">
-      <div class="me">
-        <div class="avatar">
-          <md-avatar class="md-large">
-            <img src="@/assets/logo.png" alt="Avatar">
-          </md-avatar>
+  <div>
+    <div @click="goBack()" class="header md-layout md-alignment-center-left">
+      <icon name="angle-left" scale="2"></icon>
+      <span class="text">对战</span>
+    </div>
+    <div class="battle md-elevation-2">
+      <div class="battle-header">
+        <div v-if="me" class="me">
+          <div class="avatar">
+            <md-avatar class="md-large">
+              <img src="@/assets/logo.png" alt="Avatar">
+            </md-avatar>
+          </div>
+          <span>{{me.userName}}</span>
         </div>
-        <span>王媛媛</span>
-      </div>
-      <div class="timer">
-        <div class="seconds">10S</div>
-        <div class="chapter">基础知识</div>
-      </div>
-      <div class="opponent">
-        <div class="avatar">
-          <md-avatar class="md-large">
-            <img src="@/assets/logo.png" alt="Avatar">
-          </md-avatar>
+        <div class="timer">
+          <div class="seconds">10S</div>
+          <div class="chapter">{{chapterName}}</div>
         </div>
-        <span>王媛媛</span>
+        <div v-if="opponent" class="opponent">
+          <div class="avatar">
+            <md-avatar class="md-large">
+              <img src="@/assets/logo.png" alt="Avatar">
+            </md-avatar>
+          </div>
+          <span>{{opponent.userName}}</span>
+        </div>
+      </div>
+      <div class="md-layout">
+        <div class="counter">
+          <div class="bar">
+            <div class="fill" :style="{height: `${20 * myRightCount}%`}"></div>
+          </div>
+          <div>{{myRightCount}}/5</div>
+        </div>
+        <div class="md-layout-item">
+          <template  v-if="currentQuestion">
+            <p class="question">{{currentQuestion.question}}</p>
+            <div class="answers">
+              <md-button v-for="option in currentQuestion.options" @click="select(option)" class="md-raised">{{option.name}}: {{option.value}}</md-button>
+            </div>
+          </template>
+        </div>
+        <div class="counter">
+          <div class="bar">
+            <div class="fill" :style="{height: `${20 * opponentRightCount}%`}"></div>
+          </div>
+          <div>{{opponentRightCount}}/5</div>
+        </div>
       </div>
     </div>
-    <div class="md-layout">
-      <div class="counter">
-        <div class="bar">
-          <div class="fill"></div>
-        </div>
-        <div>1/5</div>
-      </div>
-      <div class="md-layout-item">
-        <p class="question">同步数字体系具有什么帧结构？</p>
-        <div class="answers">
-          <md-button class="md-raised">块状</md-button>
-          <md-button class="md-raised">块状</md-button>
-          <md-button class="md-raised">块状</md-button>
-          <md-button class="md-raised">块状</md-button>
-        </div>
-      </div>
-      <div class="counter">
-        <div class="bar">
-          <div class="fill"></div>
-        </div>
-        <div>1/5</div>
-      </div>
-    </div>
+    <md-snackbar md-position="left" :md-duration="1000" :md-active.sync="showSnackbar" md-persistent>
+      <span>{{snackMsg}}</span>
+      <md-button class="md-primary" @click="showSnackbar = false">Retry</md-button>
+    </md-snackbar>
+    <md-dialog :md-active.sync="waiting">
+      <md-dialog-title>{{waitMsg}}</md-dialog-title>
+      <md-dialog-actions>
+        <md-button class="md-primary" @click="goBack()">放弃比赛</md-button>
+      </md-dialog-actions>
+    </md-dialog>
+    <md-dialog :md-active.sync="result">
+      <md-dialog-title>{{resultMsg}}</md-dialog-title>
+      <p v-if="uploading">结果上传中……</p>
+      <md-dialog-actions>
+        <md-button :disabled="uploading" class="md-primary" @click="goBack()">返回</md-button>
+      </md-dialog-actions>
+    </md-dialog>
   </div>
 </template>
 
 <script>
+import io from 'socket.io-client';
 
 export default {
   name: 'battle',
   data: () => ({
     second: 10,
-  })
+    me: null,
+    opponent: null,
+    roomId: '',
+    chapterId: '',
+    chapterName: '',
+    waitMsg: '正在等待你的对手进入房间……',
+    waiting: true,
+    questions: [],
+    currentQuestion: null,
+    currentQuestionIndex: 0,
+    myRightCount: 0,
+    opponentRightCount: 0,
+    snackMsg: '',
+    showSnackbar: false,
+    result: false,
+    resultMsg: '',
+    uploading: false
+  }),
+  mounted () {
+    const query = this.$router.currentRoute.query;
+    this.roomId = query.roomId;
+    this.chapterId = query.chapterId;
+    this.chapterName = query.chapterName;
+
+    const playRoom = io(`http://121.42.37.233:8010/room/${this.roomId}`);
+    playRoom.emit('ready', { userId: this.$store.state.user.uid, chapterId: this.chapterId });
+    playRoom.on('begin', ({playerOne, playerTwo, questions}) => {
+      console.log('begin play');
+      console.log(questions);
+      if (parseInt(playerOne.uid) === this.$store.state.user.uid) {
+        this.me = playerOne;
+        this.opponent = playerTwo;
+      } else {
+        this.me = playerTwo;
+        this.opponent = playerOne;
+      }
+      this.questions = questions;
+      this.currentQuestion = questions[this.currentQuestionIndex];
+      this.waiting = false;
+    });
+
+    playRoom.on('opponentAnswer', ({ questionId, answer }) => {
+      this.opponent.answers = this.opponent.answers || [];
+      this.opponent.answers.push({ questionId, answer });
+      const questionIndex = this.questions.findIndex(v => v.questionId === questionId);
+      if (questionIndex !== -1) {
+        if (this.questions[questionIndex].answer === answer) {
+          this.opponentRightCount++;
+          this.showSnackBarMethod('你的对手答对了一题！');
+        }
+      }
+    });
+
+    playRoom.on('over', ({opponentQuit, requestUserId}) => {
+      if (opponentQuit === true) {
+        this.showQuitResult();
+      }
+      if (requestUserId === this.$store.state.user.uid) {
+        this.uploading = true;
+        this.$http.post('/question/getCourseAndChapter', {
+          result : [{
+            userId : this.me.uid,
+            answers : this.me.answers
+          },{
+            userId : this.opponent.uid,
+            answers : this.opponent.answers
+          }]
+        }).then(data => {
+          this.uploading = false;
+        });
+      }
+      playRoom.disconnect(true)
+    });
+
+    this.playRoom = playRoom;
+  },
+  methods: {
+    goBack () {
+      this.playRoom.emit('quit', { userId: this.$store.state.user.uid, chapterId: this.chapterId });
+      this.$router.back();
+    },
+    showSnackBarMethod (msg) {
+      this.snackMsg = msg;
+      this.showSnackbar = true;
+    },
+    showWaitingMethod (msg) {
+      this.waitMsg = msg;
+      this.waiting = true;
+    },
+    showResult () {
+      if (this.myRightCount > this.opponentRightCount) {
+        this.resultMsg = `恭喜你战胜了 @${this.opponent.userName}。`;
+      } else if (this.myRightCount < this.opponentRightCount) {
+        this.resultMsg = `很遗憾你被 @${this.opponent.userName} 打败了`;
+      } else {
+        this.resultMsg = `你跟 @${this.opponent.userName} 握手言和`;
+      }
+      this.result = true;
+    },
+    showQuitResult () {
+      this.resultMsg = `@${this.opponent.userName} 落荒而逃，你赢得了比赛。`;
+      this.result = true;
+    },
+    select (option) {
+      this.me.answers = this.me.answers || [];
+      const answer = { questionId: this.currentQuestion.questionId, answer: option.name };
+      this.me.answers.push(answer);
+      this.playRoom.emit('answer', answer);
+      if (this.currentQuestion.answer === option.name) {
+        this.myRightCount++;
+        this.showSnackBarMethod('你答对了~~');
+      }
+      this.currentQuestionIndex++;
+      if (this.currentQuestionIndex < 5) {
+        this.currentQuestion = this.questions[this.currentQuestionIndex];
+      } else {
+        this.playRoom.emit('finish', {userId: this.$store.state.user.uid});
+        this.showResult();
+      }
+    }
+  },
 };
 </script>
 
@@ -64,13 +207,13 @@ export default {
 
   .battle {
     width: 100%;
-    height: 95vh;
+    height: 92vh;
     background-color: md-get-palette-color(blue, 500);
     border-radius: 10px;
     color: #fff;
 
-    .header {
-      margin: 20px 0;
+    .battle-header {
+      padding: 20px 0;
       display: flex;
       justify-content: space-between;
 

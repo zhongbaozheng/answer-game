@@ -6,16 +6,12 @@
     </div>
     <person-card></person-card>
     <md-card>
-      <md-divider></md-divider>
       <md-table>
         <md-table-row v-if="myRanking">
           <md-table-head md-numeric>{{myRanking.rank}}</md-table-head>
           <md-table-head>{{myRanking.nickname}}</md-table-head>
           <md-table-head>答题数：{{myRanking.totalQuesstion}}</md-table-head>
         </md-table-row>
-      </md-table>
-      <md-divider></md-divider>
-      <md-table>
         <md-table-row v-for="ranking in theirRanking">
           <md-table-head md-numeric>{{ranking.rank}}</md-table-head>
           <md-table-head>{{ranking.nickname}}</md-table-head>
