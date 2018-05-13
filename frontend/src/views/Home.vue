@@ -6,7 +6,7 @@
     <person-card></person-card>
     <md-button class="md-raised md-primary link" to="/topic-chosen">双人对战</md-button>
     <md-button class="md-raised md-primary link" to="/record">战绩</md-button>
-    <md-button class="md-raised md-primary link">排名</md-button>
+    <md-button class="md-raised md-primary link" to="/ranking">排名</md-button>
   </div>
 </template>
 
