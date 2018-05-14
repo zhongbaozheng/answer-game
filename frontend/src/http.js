@@ -2,7 +2,7 @@ import axios from 'axios';
 import Vue from 'vue';
 
 // axios.defaults.baseURL = process.env.API_ROOT;
-axios.defaults.baseURL = 'http://brain.vipgz1.idcfengye.com';// replace the apr root here
+axios.defaults.baseURL = 'http://125.216.112.121:8083';// replace the apr root here
 axios.defaults.headers.post['Content-Type'] = 'application/json;charset=UTF-8';
 
 axios.interceptors.response.use(

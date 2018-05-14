@@ -9,7 +9,7 @@
       <md-list-item v-for="course in courses" :key="course.courseId" md-expand>
         <span class="md-list-item-text">{{course.course}}</span>
         <md-list slot="md-expand">
-          <md-list-item :key="chapter.chapterId" @click="startBattle(chapter.chapterId)" v-for="chapter in course.chapters" class="md-inset">{{chapter.chapter}}</md-list-item>
+          <md-list-item :key="chapter.chapterId" @click="startBattle(chapter.chapterId, chapter.chapter)" v-for="chapter in course.chapters" class="md-inset">{{chapter.chapter}}</md-list-item>
         </md-list>
       </md-list-item>
     </md-list>
@@ -37,28 +37,31 @@ export default {
       });
     });
 
-    this.matchRoom = io('http://121.42.37.233:8010/match');
+    this.matchRoom = io('http://125.216.112.121:8001/match');
     this.matchRoom.on('success', data => {
       console.log(data);
-      const userIds = data.userIds.map(id => parseInt(id));
-      const idIndex = userIds.findIndex(v => v === this.$store.state.user.uid);
-      if (idIndex !== -1) {
-        this.$router.push({ path: 'battle', query: { roomId: data.roomId, opponentId: userIds[1-idIndex] }});
+      if (data.userIds
+          .map(id => parseInt(id))
+          .findIndex(v => v === this.$store.state.user.uid) !== -1) {
+        this.matchRoom.disconnect();
+        this.$router.push({ path: 'battle', query: { roomId: data.roomId, chapterId: this.matchingId, chapterName: this.matchingName }});
       }
     })
   },
   methods: {
-    startBattle (id) {
+    startBattle (id, name) {
       if (this.matchingId) return;
       this.matchRoom.open();
       this.matchRoom.emit('start', { userId: this.$store.state.user.uid, chapterId: id });
       this.matchingId = id;
+      this.matchingName = name;
       this.showMatching = true;
     },
     cancelMatch () {
       this.matchRoom.disconnect();
       this.matchRoom.emit('cancel', { userId: this.$store.state.user.uid, chapterId: this.matchingId });
       this.matchingId = '';
+      this.matchingName = '';
       this.showMatching = false;
     },
     goBack () {
@@ -70,7 +73,8 @@ export default {
     courses: [],
     showDialog: false,
     showMatching: false,
-    matchingId: ''
+    matchingId: '',
+    matchingName: '',
   })
 };
 </script>
