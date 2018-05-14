@@ -1,6 +1,7 @@
 module.exports = {
     "extends": "standard",
     "globals": {
-        "Cache": true
+        "Cache": true,
+        "Io": true
     }
 };

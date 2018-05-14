@@ -2616,6 +2616,10 @@ request@^2.85.0:
     tunnel-agent "^0.6.0"
     uuid "^3.1.0"
 
+require-dir@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/require-dir/-/require-dir-1.0.0.tgz#c2639de72960ea1ee280279f2da35e03c6536b2d"
+
 require-uncached@^1.0.3:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/require-uncached/-/require-uncached-1.0.3.tgz#4e0d56d6c9662fd31e43011c4b95aa49955421d3"
