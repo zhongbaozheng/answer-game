@@ -101,7 +101,7 @@ export default {
     this.chapterId = query.chapterId;
     this.chapterName = query.chapterName;
 
-    const playRoom = io(`http://localhost:8001/room/${this.roomId}`);
+    const playRoom = io(`http://125.216.112.121:8001/room/${this.roomId}`);
     playRoom.emit('ready', { userId: this.$store.state.user.uid, chapterId: this.chapterId });
     playRoom.on('begin', ({playerOne, playerTwo, questions}) => {
       console.log('begin play');
