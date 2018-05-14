@@ -136,7 +136,7 @@ export default {
       }
       if (requestUserId === this.$store.state.user.uid) {
         this.uploading = true;
-        this.$http.post('/question/getCourseAndChapter', {
+        this.$http.post('/brain/saveAnswers', {
           result : [{
             userId : this.me.uid,
             answers : this.me.answers
