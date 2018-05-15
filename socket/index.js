@@ -7,6 +7,11 @@ const prefix = {
   }
 }
 
+const isOnlineUser = async (userId) => {
+  const result = await Cache.sismember(prefix.onlineUsers(), userId)
+  return result
+}
+
 const addOnlineUser = async (userId) => {
   const result = await Cache.sadd(prefix.onlineUsers(), userId)
   return result
@@ -25,10 +30,19 @@ module.exports = function (app) {
   })
   io.on('connect', (socket) => {
     socket.on('online', async (data) => {
+      socket.userId = data.userId
+      if (isOnlineUser(data.userId)) {
+        io.emit('logout', { userId: data.userId })
+      }
       await addOnlineUser(data.userId)
     })
     socket.on('off', async (data) => {
       await deleteOnlineUser(data.userId)
+      socket.disconnect(true)
+    })
+    socket.on('disconnect', async () => {
+      await deleteOnlineUser(socket.userId)
+      socket.disconnect(true)
     })
   })
   // match
