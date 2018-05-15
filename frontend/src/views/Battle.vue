@@ -35,10 +35,10 @@
           <div>{{myRightCount}}/5</div>
         </div>
         <div class="md-layout-item">
-          <template  v-if="currentQuestion">
-            <p class="question">{{currentQuestion.question}}</p>
+          <template >
+            <p class="question">{{currentQuestion}}</p>
             <div class="answers">
-              <md-button v-for="option in currentQuestion.options" @click="select(option)" class="md-raised">{{option.name}}: {{option.value}}</md-button>
+              <md-button v-for="option in currentOptions" @click="select(option)" class="md-raised">{{option.name}}: {{option.value}}</md-button>
             </div>
           </template>
         </div>
@@ -84,8 +84,8 @@ export default {
     chapterName: '',
     waitMsg: '正在等待你的对手进入房间……',
     waiting: true,
-    questions: [],
-    currentQuestion: null,
+    currentQuestion:  '',
+    currentOptions: [],
     currentQuestionIndex: 0,
     myRightCount: 0,
     opponentRightCount: 0,
@@ -102,6 +102,7 @@ export default {
     this.roomId = query.roomId;
     this.chapterId = query.chapterId;
     this.chapterName = query.chapterName;
+    this.questions = [];
 
     const playRoom = io(`http://125.216.112.121:8001/room/${this.roomId}`);
     playRoom.emit('ready', { userId: this.$store.state.user.uid, chapterId: this.chapterId });
@@ -113,8 +114,11 @@ export default {
         this.me = playerTwo;
         this.opponent = playerOne;
       }
+      this.me.answers = [];
+      this.opponent.answers = [];
       this.questions = questions;
-      this.currentQuestion = questions[this.currentQuestionIndex];
+      this.currentQuestion = this.questions[this.currentQuestionIndex].question;
+      this.currentOptions = this.questions[this.currentQuestionIndex].options;
       this.waiting = false;
       this.startTimer();
     });
@@ -194,16 +198,17 @@ export default {
     },
     select (option) {
       this.me.answers = this.me.answers || [];
-      const answer = { questionId: this.currentQuestion.questionId, answer: option.name };
+      const answer = { questionId: this.questions[this.currentQuestionIndex].questionId, answer: option.name };
       this.me.answers.push(answer);
       this.playRoom.emit('answer', answer);
-      if (this.currentQuestion.answer === option.name) {
+      if (this.questions[this.currentQuestionIndex].answer === option.name) {
         this.myRightCount++;
         this.showSnackBarMethod('你答对了~~');
       }
       this.currentQuestionIndex++;
       if (this.currentQuestionIndex < 5) {
-        this.currentQuestion = this.questions[this.currentQuestionIndex];
+        this.currentQuestion = this.questions[this.currentQuestionIndex].question;
+        this.currentOptions = this.questions[this.currentQuestionIndex].options;
         this.startTimer();
       } else {
         this.playRoom.emit('finish', {userId: this.$store.state.user.uid});

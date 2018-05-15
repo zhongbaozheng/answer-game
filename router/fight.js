@@ -2,7 +2,7 @@
  * @Author: QuincyChen [chenquincy@qq.com]
  * @Date: 2017-10-17 22:41:04
  * @Last Modified by: QuincyChen
- * @Last Modified time: 2018-05-15 01:46:12
+ * @Last Modified time: 2018-05-16 01:24:02
  */
 
 const router = require('koa-router')()
@@ -29,7 +29,7 @@ router.post('/', async (ctx, next) => {
     ctx.error(null, '请选择两名玩家', 500)
     return
   }
-  if (!ctx.request.body.chapterId) {
+  if (!ctx.request.body.chapterId || !ctx.request.body.chapterName) {
     ctx.error(null, '请选择对战章节', 500)
     return
   }
@@ -45,7 +45,7 @@ router.post('/', async (ctx, next) => {
   Room(Io, roomId)
 
   // 匹配成功
-  Io.emit('fight', { userIds: ctx.request.body.userIds, chapterId: ctx.request.body.chapterId, roomId })
+  Io.emit('fight', { userIds: ctx.request.body.userIds, chapterId: ctx.request.body.chapterId, chapterName: ctx.request.body.chapterName, roomId })
   ctx.ok('指定对战成功')
 })
 
