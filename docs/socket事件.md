@@ -88,8 +88,8 @@
 
 ### 特殊情况
 
-1. 可以预知的用户下线，`emit('off', { userId })`
-2. 同一账号多端登录，后端 `emit('off', {userId, mchId})`，前端检测条件 `local.userId === userId && local.mchId !== mchId` 符合时：
+1. 可以预知的用户下线，前端`emit('off', { userId })`
+2. 同一账号多端登录，后端 `emit('logout', {userId, mchId})`，前端检测条件 `local.userId === userId && local.mchId !== mchId` 符合时：
    1. 当前处于对战中，房间内`emit('quit', {userId, chapterId})` 后清除登录信息
    2. 非对战中直接清除登录信息
 
