@@ -4,16 +4,17 @@
 
 1. 前端向后端通知的事件
 
-| 事件名称 | 说明     | 传递数据 |
-| -------- | -------- | -------- |
-| online   | 用户上线 | {userId} |
-| off      | 用户下线 | {userId} |
+| 事件名称 | 说明     | 传递数据                                |
+| -------- | -------- | --------------------------------------- |
+| online   | 用户上线 | {userId, mchId(前端随机一个保存在本地)} |
+| off      | 用户下线 | {userId}                                |
 
 2. 后端向前端通知的事件
 
-| 事件名称 | 说明         | 传递数据                     |
-| -------- | ------------ | ---------------------------- |
-| fight    | 通知用户对战 | {userIds, chapterId, roomId} |
+| 事件名称 | 说明                       | 传递数据                     |
+| -------- | -------------------------- | ---------------------------- |
+| fight    | 通知用户对战               | {userIds, chapterId, roomId} |
+| logout   | 账号重复登录，通知用户下线 | {userId, mchId}              |
 
 
 
@@ -82,4 +83,13 @@
 
 1. java后台请求node后台fight接口，参数：`{userIds, chapterId}`，node后台判断userIds中的用户是否是 `online`状态，是的话调用成功，创建房间 `roomId` ，并 `emit('fight', {userIds, chapterId, roomId})`，有用户不在线的话调用失败。
 2. 前端接收到 `fight` 事件后判断自己是否在 `userIds` 中，后面的步骤和第一种情况的步骤5开始一样
+
+
+
+### 特殊情况
+
+1. 可以预知的用户下线，前端`emit('off', { userId })`
+2. 同一账号多端登录，后端 `emit('logout', {userId, mchId})`，前端检测条件 `local.userId === userId && local.mchId !== mchId` 符合时：
+   1. 当前处于对战中，房间内`emit('quit', {userId, chapterId})` 后清除登录信息
+   2. 非对战中直接清除登录信息
 

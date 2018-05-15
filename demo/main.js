@@ -1,6 +1,10 @@
 /* eslint-disable */
 var chapterId = 1
 var roomId, playRoom, playing = false, rightCount = 0, opponentRightCount = 0
+var home = io('http://localhost:8001')
+home.on('connect', function (socket) {
+  home.emit('online', { userId })
+})
 var matchRoom = io('http://localhost:8001/match')
 matchRoom.on('success', function (data) {
   console.log('match success', data)
