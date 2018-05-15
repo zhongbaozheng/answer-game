@@ -71,6 +71,7 @@
 
 <script>
 import io from 'socket.io-client';
+import config from '@/config';
 
 export default {
   name: 'battle',
@@ -106,7 +107,7 @@ export default {
     this.questions = [];
 
     // 连接对战房间并且发送准备信号
-    const playRoom = io(`http://207wd53175.imwork.net:56025/room/${this.roomId}`);
+    const playRoom = io(`${config.socketRoot}/room/${this.roomId}`);
     playRoom.emit('ready', { userId: this.$store.state.user.uid, chapterId: this.chapterId });
 
     // 接收到开始信号时初始化对战所需的变量并开始计时

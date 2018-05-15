@@ -24,8 +24,9 @@
 
 <script>
 // @ is an alias to /src
-import PersonCard from "../components/PersonCard.vue";
+import PersonCard from "@/components/PersonCard.vue";
 import io from 'socket.io-client';
+import config from '@/config';
 
 export default {
   components: {PersonCard},
@@ -36,7 +37,7 @@ export default {
         return el.chapters.length;
       });
     });
-    this.matchRoom = io('http://207wd53175.imwork.net:56025/match');
+    this.matchRoom = io(`${config.socketRoot}/match`);
     this.matchRoom.on('success', data => {
       console.log(data);
       if (data.userIds

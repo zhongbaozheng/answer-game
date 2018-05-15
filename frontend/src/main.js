@@ -11,6 +11,7 @@ import App from './App.vue';
 import router from './router';
 import store from './store';
 import './http';
+import config from './config';
 
 moment.locale('zh-cn');
 
@@ -25,7 +26,7 @@ router.beforeEach((to, from, next) => {
 
 Vue.config.productionTip = false;
 Vue.use(VueMaterial);
-Vue.use(VueSocketio, io('http://207wd53175.imwork.net:56025'));
+Vue.use(VueSocketio, io(config.socketRoot));
 Vue.component('icon', Icon);
 new Vue({
   router,
