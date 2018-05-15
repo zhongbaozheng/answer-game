@@ -161,7 +161,7 @@ export default {
       this.time = 10;
       this.timer = window.setInterval(() => {
         this.time--;
-        if(time === 0) {
+        if(this.time === 0) {
           window.clearInterval(this.timer);
           this.select({name: 'TimeOut'});
         }
