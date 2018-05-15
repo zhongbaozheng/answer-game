@@ -9,6 +9,15 @@ import router from './router';
 import store from './store';
 import './http';
 
+const whiteList = ['/login', '/register'];
+router.beforeEach((to, from, next) => {
+  if (!store.state.user && whiteList.indexOf(to.path) === -1) {
+    next({ path: '/login' });
+  } else {
+    next();
+  }
+});
+
 Vue.config.productionTip = false;
 Vue.use(VueMaterial);
 Vue.component('icon', Icon);

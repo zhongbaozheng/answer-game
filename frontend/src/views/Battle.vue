@@ -15,7 +15,7 @@
           <span>{{me.userName}}</span>
         </div>
         <div class="timer">
-          <div class="seconds">10S</div>
+          <div class="seconds">{{time}}S</div>
           <div class="chapter">{{chapterName}}</div>
         </div>
         <div v-if="opponent" class="opponent">
@@ -93,7 +93,9 @@ export default {
     showSnackbar: false,
     result: false,
     resultMsg: '',
-    uploading: false
+    uploading: false,
+    time: 10,
+    timer: null
   }),
   mounted () {
     const query = this.$router.currentRoute.query;
@@ -104,8 +106,6 @@ export default {
     const playRoom = io(`http://125.216.112.121:8001/room/${this.roomId}`);
     playRoom.emit('ready', { userId: this.$store.state.user.uid, chapterId: this.chapterId });
     playRoom.on('begin', ({playerOne, playerTwo, questions}) => {
-      console.log('begin play');
-      console.log(questions);
       if (parseInt(playerOne.uid) === this.$store.state.user.uid) {
         this.me = playerOne;
         this.opponent = playerTwo;
@@ -116,6 +116,7 @@ export default {
       this.questions = questions;
       this.currentQuestion = questions[this.currentQuestionIndex];
       this.waiting = false;
+      this.startTimer();
     });
 
     playRoom.on('opponentAnswer', ({ questionId, answer }) => {
@@ -139,13 +140,14 @@ export default {
         this.$http.post('/brain/saveAnswers', {
           result : [{
             userId : this.me.uid,
-            answers : this.me.answers
+            answers : this.me.answers.filter(a => a.answer !== 'TimeOut')
           },{
             userId : this.opponent.uid,
-            answers : this.opponent.answers
+            answers : this.opponent.answers.filter(a => a.answer !== 'TimeOut')
           }]
         }).then(data => {
           this.uploading = false;
+          [].filter()
         });
       }
       playRoom.disconnect(true)
@@ -154,6 +156,17 @@ export default {
     this.playRoom = playRoom;
   },
   methods: {
+    startTimer () {
+      if (this.timer) window.clearInterval(this.timer);
+      this.time = 10;
+      this.timer = window.setInterval(() => {
+        this.time--;
+        if(time === 0) {
+          window.clearInterval(this.timer);
+          this.select({name: 'TimeOut'});
+        }
+      }, 1000);
+    },
     goBack () {
       this.playRoom.emit('quit', { userId: this.$store.state.user.uid, chapterId: this.chapterId });
       this.$router.back();
@@ -192,6 +205,7 @@ export default {
       this.currentQuestionIndex++;
       if (this.currentQuestionIndex < 5) {
         this.currentQuestion = this.questions[this.currentQuestionIndex];
+        this.startTimer();
       } else {
         this.playRoom.emit('finish', {userId: this.$store.state.user.uid});
         this.showResult();
