@@ -11,10 +11,10 @@
 
 2. 后端向前端通知的事件
 
-| 事件名称 | 说明                       | 传递数据                     |
-| -------- | -------------------------- | ---------------------------- |
-| fight    | 通知用户对战               | {userIds, chapterId, roomId} |
-| logout   | 账号重复登录，通知用户下线 | {userId, mchId}              |
+| 事件名称 | 说明                       | 传递数据                                  |
+| -------- | -------------------------- | ----------------------------------------- |
+| fight    | 通知用户对战               | {userIds, chapterId, chapterName, roomId} |
+| logout   | 账号重复登录，通知用户下线 | {userId, mchId}                           |
 
 
 
@@ -86,7 +86,7 @@
 
 ### 二、后台指定
 
-1. java后台请求node后台fight接口，参数：`{userIds, chapterId}`，node后台判断userIds中的用户是否是 `online`状态，是的话调用成功，创建房间 `roomId` ，并 `emit('fight', {userIds, chapterId, roomId})`，有用户不在线的话调用失败。
+1. java后台请求node后台fight接口，参数：`{userIds, chapterId}`，node后台判断userIds中的用户是否是 `online`状态，是的话调用成功，创建房间 `roomId` ，并 `emit('fight', {userIds, chapterId, chapterName, roomId})`，有用户不在线的话调用失败。
 2. 前端接收到 `fight` 事件后判断自己是否在 `userIds` 中，后面的步骤和第一种情况的步骤5开始一样
 
 
