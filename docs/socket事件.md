@@ -57,17 +57,22 @@
 
 >  双方答对的题数，对战结果由前端判断
 
+以下连接保持长连
+
+1. `homeRoom = io('localhost:8001')`
+2. `matchRoom = io('localhost:8001/match')`
+
 ### 一、自行匹配
 
-1. 用户进入首页`emit('online', {userId, mchId})`，关闭网页则`emit('off', {userId})`
+1. 用户进入首页`emit('online', {userId, mchId})`，mchId由前端自行随机生成，关闭网页则`emit('off', {userId})`
 
-2. 用户A选择章节后点击匹配按钮  `connect('localhost:8001/match')`，之后 `emit('start', {userId, chapterId})`
+2. 用户A选择章节后点击匹配按钮，之后 `emit('start', {userId, chapterId})`
 
 3. node端接收`start`事件后在对应章节的匹配队列中匹配用户，若当前队列没有用户，将其用户A添加在队列中（用户A处于匹配中状态），若队列中存在用户B，取出用户B，并广播`success`事件：`emit('success', { userIds, chapterId, roomId })`，前端需要判断自己的id是否处于`userIds`数组中确认是否是自己匹配成功
 
 4. 匹配过程中若用户A`emit('cancel', {userId, chapterId})`, 将用户A移出匹配队列
 
-5. 用户A和用户B在接收到 `success` 事件后断开 match 连接，连接对应房间`connect('localhost:8001/room/:roomId')` ，加载题目后向后端 `emit('ready', {userId, chapterId})`
+5. 用户A和用户B在接收到 `success` 事件后连接对应房间`connect('localhost:8001/room/:roomId')` ，加载题目后向后端 `emit('ready', {userId, chapterId})`
 
 6. 后端在确认用户A，B都进入房间后 `emit('begin', {playerOne, playerTwo, questions})`, 此时用户A、B可以开始答题
 
