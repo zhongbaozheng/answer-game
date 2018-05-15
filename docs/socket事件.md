@@ -59,7 +59,7 @@
 
 ### 一、自行匹配
 
-1. 用户进入首页`emit('online', {userId})`，关闭网页则`emit('off', {userId})`
+1. 用户进入首页`emit('online', {userId, mchId})`，关闭网页则`emit('off', {userId})`
 
 2. 用户A选择章节后点击匹配按钮  `connect('localhost:8001/match')`，之后 `emit('start', {userId, chapterId})`
 
