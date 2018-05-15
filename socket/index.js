@@ -32,7 +32,7 @@ module.exports = function (app) {
     socket.on('online', async (data) => {
       socket.userId = data.userId
       if (isOnlineUser(data.userId)) {
-        io.emit('logout', { userId: data.userId })
+        io.emit('logout', { userId: data.userId, mchId: data.mchId })
       }
       await addOnlineUser(data.userId)
     })
