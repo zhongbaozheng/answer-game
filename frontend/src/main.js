@@ -1,5 +1,7 @@
 import Vue from 'vue';
 import VueMaterial from 'vue-material';
+import VueSocketio from 'vue-socket.io';
+import io from 'socket.io-client';
 import 'vue-material/dist/vue-material.min.css';
 import 'vue-material/dist/theme/default.css';
 import 'vue-awesome/icons';
@@ -20,8 +22,14 @@ router.beforeEach((to, from, next) => {
 
 Vue.config.productionTip = false;
 Vue.use(VueMaterial);
+Vue.use(VueSocketio, io('http://207wd53175.imwork.net:56025/match'));
 Vue.component('icon', Icon);
 new Vue({
+  sockets: {
+    connect() {
+      console.log('match socket connected');
+    },
+  },
   router,
   store,
   render: h => h(App),

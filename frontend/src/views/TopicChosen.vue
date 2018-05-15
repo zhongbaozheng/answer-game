@@ -25,7 +25,6 @@
 <script>
 // @ is an alias to /src
 import PersonCard from "../components/PersonCard.vue";
-import io from 'socket.io-client';
 
 export default {
   components: {PersonCard},
@@ -36,14 +35,11 @@ export default {
         return el.chapters.length;
       });
     });
-
-    this.matchRoom = io('http://125.216.112.121:8001/match');
-    this.matchRoom.on('success', data => {
+    this.$socket.on('success', data => {
       console.log(data);
       if (data.userIds
           .map(id => parseInt(id))
           .findIndex(v => v === this.$store.state.user.uid) !== -1) {
-        this.matchRoom.disconnect();
         this.$router.push({ path: 'battle', query: { roomId: data.roomId, chapterId: this.matchingId, chapterName: this.matchingName }});
       }
     })
@@ -51,15 +47,14 @@ export default {
   methods: {
     startBattle (id, name) {
       if (this.matchingId) return;
-      this.matchRoom.open();
-      this.matchRoom.emit('start', { userId: this.$store.state.user.uid, chapterId: id });
+      this.$socket.open();
+      this.$socket.emit('start', { userId: this.$store.state.user.uid, chapterId: id });
       this.matchingId = id;
       this.matchingName = name;
       this.showMatching = true;
     },
     cancelMatch () {
-      this.matchRoom.disconnect();
-      this.matchRoom.emit('cancel', { userId: this.$store.state.user.uid, chapterId: this.matchingId });
+      this.$socket.emit('cancel', { userId: this.$store.state.user.uid, chapterId: this.matchingId });
       this.matchingId = '';
       this.matchingName = '';
       this.showMatching = false;
