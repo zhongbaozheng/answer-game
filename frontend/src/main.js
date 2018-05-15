@@ -2,6 +2,7 @@ import Vue from 'vue';
 import VueMaterial from 'vue-material';
 import VueSocketio from 'vue-socket.io';
 import io from 'socket.io-client';
+import moment from 'moment';
 import 'vue-material/dist/vue-material.min.css';
 import 'vue-material/dist/theme/default.css';
 import 'vue-awesome/icons';
@@ -10,6 +11,8 @@ import App from './App.vue';
 import router from './router';
 import store from './store';
 import './http';
+
+moment.locale('zh-cn');
 
 const whiteList = ['/login', '/register'];
 router.beforeEach((to, from, next) => {
@@ -22,14 +25,9 @@ router.beforeEach((to, from, next) => {
 
 Vue.config.productionTip = false;
 Vue.use(VueMaterial);
-Vue.use(VueSocketio, io('http://207wd53175.imwork.net:56025/match'));
+Vue.use(VueSocketio, io('http://207wd53175.imwork.net:56025'));
 Vue.component('icon', Icon);
 new Vue({
-  sockets: {
-    connect() {
-      console.log('match socket connected');
-    },
-  },
   router,
   store,
   render: h => h(App),
