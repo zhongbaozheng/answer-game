@@ -2,6 +2,8 @@ import axios from 'axios';
 import Vue from 'vue';
 
 // axios.defaults.baseURL = process.env.API_ROOT;
+// develop address: http://brain.vipgz1.idcfengye.com
+// productive address: http://125.216.112.121:8083
 axios.defaults.baseURL = 'http://125.216.112.121:8083';// replace the apr root here
 axios.defaults.headers.post['Content-Type'] = 'application/json;charset=UTF-8';
 
@@ -18,7 +20,7 @@ axios.interceptors.response.use(
 const handleResponse = (res) => {
   console.log(res);
   const { data, status } = res.data;
-  if (status !== 200) {
+  if (parseInt(status) !== 200) {
     return Promise.reject(res.data);
   } else {
     return Promise.resolve(data);

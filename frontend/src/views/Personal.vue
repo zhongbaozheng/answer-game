@@ -15,6 +15,10 @@
             <md-input v-model="nickname"></md-input>
           </md-field>
           <md-field class="md-layout-item md-size-75">
+            <label>原密码</label>
+            <md-input v-model="oldPassword" type="password"></md-input>
+          </md-field>
+          <md-field class="md-layout-item md-size-75">
             <label>新密码</label>
             <md-input v-model="newPassword" type="password"></md-input>
           </md-field>
@@ -32,6 +36,7 @@
 export default {
   name: 'personal',
   data: () => ({
+    oldPassword: '',
     newPassword: '',
     msg: '',
     showSnack: false
@@ -52,6 +57,7 @@ export default {
       this.$http.post('/user/update', {
         uid: this.$store.state.user.uid,
         nickname: this.nickname,
+        oldPassword: this.oldPassword,
         newPassword: this.newPassword
       }).then(() => {
         this.msg = '修改成功';

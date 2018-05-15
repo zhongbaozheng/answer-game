@@ -18,7 +18,7 @@
       </div>
     </md-card-content>
     <md-snackbar md-position="left" :md-duration="2000" :md-active.sync="showSnack" md-persistent>
-      <span>注册成功，即将跳转至登录页面…</span>
+      <span>{{ msg }}</span>
     </md-snackbar>
   </md-card>
 </template>
@@ -30,7 +30,8 @@ export default {
   data: () => ({
     nickname: '',
     password: '',
-    showSnack: false
+    showSnack: false,
+    msg: ''
   }),
   methods: {
     register() {
@@ -38,10 +39,14 @@ export default {
         nickname: this.nickname,
         password: this.password
       }).then(data => {
+        this.msg = '注册成功，即将跳转至登录页面…';
         this.showSnack = true;
         window.setTimeout(() => {
           this.$router.push('/login');
         }, 2000);
+      }).catch(res=> {
+        this.msg = res.msg;
+        this.showSnack = true;
       })
     }
   },
