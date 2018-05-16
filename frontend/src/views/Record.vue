@@ -5,7 +5,7 @@
       <span class="text">战绩</span>
     </div>
     <person-card></person-card>
-    <md-card>
+    <md-card style="over-flow: auto; height: 58%; border-radius: 10px;">
       <md-content class="record-stats md-layout md-alignment-center-space-around">
         <div class="stat">
           <div class="data">{{totalQuesstion}}</div>
@@ -65,6 +65,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+  .record {
+    height: 100%;
+  }
+
   .header {
     .text {
       margin-left: 10px;

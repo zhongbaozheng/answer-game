@@ -7,16 +7,48 @@
     <person-card></person-card>
     <md-card>
       <md-table>
-        <md-table-row v-if="myRanking">
-          <md-table-head md-numeric>{{myRanking.rank}}</md-table-head>
-          <md-table-head>{{myRanking.nickname}}</md-table-head>
-          <md-table-head>答题数：{{myRanking.totalQuesstion}}</md-table-head>
+        <md-table-row v-if="myRanking && parseInt(myRanking.rank) == 1" class="my-rank">
+          <md-table-head md-numeric><span class="first-rank-position">{{myRanking.rank}}</span></md-table-head>
+          <md-table-head><span class="first-rank-content">{{myRanking.nickname}}</span></md-table-head>
+          <md-table-head><span class="first-rank-content">答题数：{{myRanking.totalQuesstion}}</span></md-table-head>
         </md-table-row>
-        <md-table-row v-for="ranking in theirRanking">
-          <md-table-head md-numeric>{{ranking.rank}}</md-table-head>
-          <md-table-head>{{ranking.nickname}}</md-table-head>
-          <md-table-head>答题数：{{ranking.totalQuesstion}}</md-table-head>
+        <md-table-row v-else-if="myRanking && parseInt(myRanking.rank) == 2" class="my-rank">
+          <md-table-head md-numeric><span class="second-rank-position">{{myRanking.rank}}</span></md-table-head>
+          <md-table-head><span class="second-rank-content">{{myRanking.nickname}}</span></md-table-head>
+          <md-table-head><span class="second-rank-content">答题数：{{myRanking.totalQuesstion}}</span></md-table-head>
         </md-table-row>
+        <md-table-row v-else-if="myRanking && parseInt(myRanking.rank) == 3" class="my-rank">
+          <md-table-head md-numeric><span class="third-rank-position">{{myRanking.rank}}</span></md-table-head>
+          <md-table-head><span class="third-rank-content">{{myRanking.nickname}}</span></md-table-head>
+          <md-table-head><span class="third-rank-content">答题数：{{myRanking.totalQuesstion}}</span></md-table-head>
+        </md-table-row>
+        <md-table-row v-else-if="myRanking && parseInt(myRanking.rank) > 3" class="my-rank">
+          <md-table-head md-numeric><span class="third-rank-position">{{myRanking.rank}}</span></md-table-head>
+          <md-table-head><span class="third-rank-content">{{myRanking.nickname}}</span></md-table-head>
+          <md-table-head><span class="third-rank-content">答题数：{{myRanking.totalQuesstion}}</span></md-table-head>
+        </md-table-row>
+        <template v-for="(ranking, index) in theirRanking">
+          <md-table-row v-if="index == 0">
+            <md-table-head md-numeric><span class="first-rank-position">{{ranking.rank}}</span></md-table-head>
+            <md-table-head><span class="first-rank-content">{{ranking.nickname}}</span></md-table-head>
+            <md-table-head><span class="first-rank-content">答题数：{{ranking.totalQuesstion}}</span></md-table-head>
+          </md-table-row>
+          <md-table-row v-else-if="index == 1">
+            <md-table-head md-numeric><span class="second-rank-position">{{ranking.rank}}</span></md-table-head>
+            <md-table-head><span class="second-rank-content">{{ranking.nickname}}</span></md-table-head>
+            <md-table-head><span class="second-rank-content">答题数：{{ranking.totalQuesstion}}</span></md-table-head>
+          </md-table-row>
+          <md-table-row v-else-if="index == 2">
+            <md-table-head md-numeric><span class="third-rank-position">{{ranking.rank}}</span></md-table-head>
+            <md-table-head><span class="third-rank-content">{{ranking.nickname}}</span></md-table-head>
+            <md-table-head><span class="third-rank-content">答题数：{{ranking.totalQuesstion}}</span></md-table-head>
+          </md-table-row>
+          <md-table-row v-else>
+            <md-table-head md-numeric><span class="other-rank-position">{{ranking.rank}}</span></md-table-head>
+            <md-table-head><span class="other-rank-content">{{ranking.nickname}}</span></md-table-head>
+            <md-table-head><span class="other-rank-content">答题数：{{ranking.totalQuesstion}}</span></md-table-head>
+          </md-table-row>
+        </template>
       </md-table>
     </md-card>
   </div>
@@ -50,6 +82,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+  .ranking {
+    height: 100%;
+  }
+
   .header {
     .text {
       margin-left: 10px;
@@ -69,5 +105,89 @@ export default {
 
   .md-card {
     margin: 10px;
+  }
+
+  .md-card.md-theme-default {
+    border-radius: 10px;
+  }
+
+  .my-rank {
+    border-bottom: 1px dashed black;
+  }
+
+  .my-rank-position {
+    background: #656566;
+    display: inline-block;
+    width: 15px;
+    height: 15px;
+    line-height: 15px;
+    text-align: center;
+    color: white;
+    border-radius: 50%;
+  }
+
+  .my-rank-content {
+    color: #656566;
+  }
+
+  .first-rank-position {
+    background: #FC2272;
+    display: inline-block;
+    width: 15px;
+    height: 15px;
+    line-height: 15px;
+    text-align: center;
+    color: white;
+    border-radius: 50%;
+  }
+
+  .first-rank-content {
+    color: #FC2272;
+  }
+
+  .second-rank-position {
+    background: #FFA127;
+    display: inline-block;
+    width: 15px;
+    height: 15px;
+    line-height: 15px;
+    text-align: center;
+    color: white;
+    border-radius: 50%;
+  }
+
+  .second-rank-content {
+    color: #FFA127;
+  }
+
+  .third-rank-position {
+    background: #44D31F;
+    display: inline-block;
+    width: 15px;
+    height: 15px;
+    line-height: 15px;
+    text-align: center;
+    color: white;
+    border-radius: 50%;
+  }
+
+  .third-rank-content {
+    color: #44D31F;
+  }
+
+  .other-rank-position {
+    background: transparent;
+    display: inline-block;
+    width: 15px;
+    height: 15px;
+    line-height: 15px;
+    text-align: center;
+    color: #656566;
+    border-radius: 50%;
+    border: 1px solid #656566;
+  }
+
+  .other-rank-content {
+    color: #656566;
   }
 </style>
