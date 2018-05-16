@@ -57,7 +57,7 @@ module.exports = (io, roomId) => {
       // 清除用户对战状态，结束对战
       await PlayingUser.remove(room.playingUsers)
       room.users.delete(data.userId)
-      
+
       room.requestUserId = room.playingUsers[0] === socket.userId ? room.playingUsers[1] : room.playingUsers[0]
       room.emit('over', { opponentQuit: true, requestUserId: room.requestUserId })
     })

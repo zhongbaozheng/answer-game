@@ -15,6 +15,10 @@ module.exports = {
     /**
      * 在线用户集
      */
+    showAll: async () => {
+      const result = await Cache.smembers(prefix.onlineUsers())
+      console.log('onlineUsers -----> ', result)
+    },
     includes: async (userId) => {
       const result = await Cache.sismember(prefix.onlineUsers(), userId)
       return result
@@ -28,6 +32,10 @@ module.exports = {
     }
   },
   MatchingUser: {
+    showAll: async (chapterId) => {
+      const result = await Cache.smembers(prefix.matchingUsers(chapterId))
+      console.log('matchingUsers -----> ', result)
+    },
     // 用户是否匹配中
     includes: async (chapterId, userId) => {
       const result = await Cache.sismember(prefix.matchingUsers(chapterId), userId)
@@ -51,6 +59,10 @@ module.exports = {
     /**
      * 对战中用户集
      */
+    showAll: async () => {
+      const result = await Cache.smembers(prefix.playingUsers())
+      console.log('matchingUsers -----> ', result)
+    },
     includes: async (userId) => {
       const result = await Cache.sismember(prefix.playingUsers(), userId)
       return result

@@ -2,7 +2,7 @@
  * @Author: QuincyChen [chenquincy@qq.com]
  * @Date: 2017-10-17 22:41:04
  * @Last Modified by: QuincyChen
- * @Last Modified time: 2018-05-17 02:12:28
+ * @Last Modified time: 2018-05-17 02:55:12
  */
 
 const router = require('koa-router')()
@@ -21,6 +21,9 @@ router.post('/', async (ctx, next) => {
     ctx.error(null, '请选择对战章节', 500)
     return
   }
+  // 打印在线玩家
+  await OnlineUser.showAll()
+
   const [online1, online2, playing1, playing2] = await Promise.all([
     OnlineUser.includes(ctx.request.body.userIds[0]),
     OnlineUser.includes(ctx.request.body.userIds[1]),
