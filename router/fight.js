@@ -18,13 +18,11 @@ const prefix = {
 // 用户是否在线
 const isOnlineUser = async (userId) => {
   const result = await Cache.sismember(prefix.onlineUsers(), userId)
-  console.log(result)
   return result
 }
 
 // 指定两人对战
 router.post('/', async (ctx, next) => {
-  console.log(ctx.request.body);
   if (!ctx.request.body.userIds || ctx.request.body.userIds.length !== 2) {
     ctx.error(null, '请选择两名玩家', 500)
     return

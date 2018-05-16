@@ -22,7 +22,7 @@ module.exports = (io, roomId) => {
         try {
           const result = await request({
             method: 'POST',
-            uri: 'http://brain.vipgz1.idcfengye.com/brain/getQuestions',
+            uri: 'http://125.216.112.121:8083/brain/getQuestions',
             body: options,
             json: true
           })

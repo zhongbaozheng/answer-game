@@ -39,10 +39,9 @@ export default {
     });
     this.matchRoom = io(`${config.socketRoot}/match`);
     this.matchRoom.on('success', data => {
-      console.log(data);
       if (data.userIds
           .map(id => parseInt(id))
-          .findIndex(v => v === this.$store.state.user.uid) !== -1) {
+          .findIndex(v => v === this.$store.state.user.uid) !== -1 && this.matchingId) {
         this.matchRoom.disconnect();
         this.$router.push({ path: '/battle', query: { roomId: data.roomId, chapterId: this.matchingId, chapterName: this.matchingName }});
       }
