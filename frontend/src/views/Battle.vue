@@ -92,13 +92,13 @@
     <md-snackbar md-position="left" :md-duration="1000" :md-active.sync="showSnackbar" md-persistent>
       <span>{{snackMsg}}</span>
     </md-snackbar>
-    <md-dialog :md-active.sync="waiting">
+    <md-dialog :md-active.sync="waiting" :md-fullscreen="false" :md-click-outside-to-close="false" :md-close-on-esc="false">
       <md-dialog-title>{{waitMsg}}</md-dialog-title>
       <md-dialog-actions>
         <md-button class="md-primary" @click="goBack()">放弃比赛</md-button>
       </md-dialog-actions>
     </md-dialog>
-    <md-dialog :md-active.sync="result">
+    <md-dialog :md-active.sync="result" :md-fullscreen="false" :md-click-outside-to-close="false" :md-close-on-esc="false">
       <md-dialog-title>{{resultMsg}}</md-dialog-title>
       <p class="uploading" v-if="uploading">结果上传中……</p>
       <md-dialog-actions>

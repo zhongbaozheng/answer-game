@@ -13,7 +13,7 @@
         </md-list>
       </md-list-item>
     </md-list>
-    <md-dialog :md-active.sync="showMatching">
+    <md-dialog :md-active.sync="showMatching" :md-fullscreen="false" :md-click-outside-to-close="false" :md-close-on-esc="false">
       <md-dialog-title>正在寻找与你实力相当的对手……</md-dialog-title>
       <md-dialog-actions>
         <md-button class="md-primary" @click="cancelMatch()">退出匹配</md-button>

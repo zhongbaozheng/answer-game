@@ -30,7 +30,7 @@ export default {
   .md-layout p {
     font-size: 16px;
     color: white;
-    margin-top: 2vw;
+    margin-top: 2vh;
     margin-left: 2vw;
   }
 
