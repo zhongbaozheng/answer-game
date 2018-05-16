@@ -1,5 +1,5 @@
 <template>
-  <md-card>
+  <md-card class="register">
     <md-card-header>
       <div class="md-title">注册</div>
     </md-card-header>
@@ -54,6 +54,12 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+  .register {
+    height: 100%;
+    background: transparent;
+    box-shadow: 0 0 0 transparent;
+  }
+
   .md-button {
     margin: 6px 8px;
   }
@@ -64,15 +70,6 @@ export default {
   .md-title {
     color: rgba(255,255,255,0.9)
   }
-
-  .md-card.md-layout-item {
-    background-image: url('../assets/bg.png');
-    background-repeat: no-repeat;
-    background-color: #216EC6;
-    background-size: 100%;
-    background-position: bottom;
-    padding-bottom: 120px;
-  } 
 
   .md-field.md-theme-default label {
     font-size: 16px;

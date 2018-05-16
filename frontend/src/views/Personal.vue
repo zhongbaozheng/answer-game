@@ -75,9 +75,15 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+  .personal {
+    background: transparent;
+  }
+
   .header {
     .text {
       margin-left: 10px;
+      background: transparent;
+      box-shadow: 0 0 0 transparent;
     }
   }
 
@@ -91,15 +97,6 @@ export default {
 
   .md-title {
     color: rgba(255,255,255,0.9)
-  }
-
-  .personal.md-layout-item.md-small-size-100.md-size-50 {
-    background-image: url('../assets/bg.png');
-    background-repeat: no-repeat;
-    background-color: #216EC6;
-    background-size: 100%;
-    background-position: bottom;
-    padding-bottom: 120px;
   }
 
   .md-card.md-theme-default {
