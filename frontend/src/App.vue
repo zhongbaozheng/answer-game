@@ -1,6 +1,7 @@
 <template>
   <div id="app" class="md-layout md-alignment-center-center">
     <router-view class="md-layout-item md-small-size-100 md-size-50"/>
+    <div class="bg"></div>
   </div>
 </template>
 
@@ -59,22 +60,24 @@
 html,body,#app {
   height: 100%;
 }
+
+.bg {
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  background: url('./assets/bg.jpg') no-repeat;
+  background-size: 100%;
+  background-position: bottom;
+  bottom: 0;
+  z-index: 1;
+}
+
 #app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  background-image: url('./assets/bg.png');
-  background-repeat: no-repeat;
   background-color: #216EC6;
-  background-size: 100%;
-  background-position: bottom;
-}
-
-@media screen and (min-width: 945px) {
-  #app {
-    background-image: url('./assets/bg.jpg');
-  }
-}
+}  
 </style>

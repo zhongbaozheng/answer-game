@@ -4,9 +4,9 @@
       <p>通信工知识竞技对战平台</p>
     </div class="other">
     <person-card></person-card>
-    <img id="fight" src="../assets/fight_bg.jpg" class="md-raised md-primary link" to="/topic-chosen" />
-    <img id="record" src="../assets/record_bg.jpg" class="md-raised md-primary link" to="/record" />
-    <img id="rank" src="../assets/rank_bg.jpg" class="md-raised md-primary link" to="/ranking" />
+    <img id="fight" src="../assets/fight_bg.jpg" class="md-raised md-primary link" @click="$router.push('/topic-chosen')" />
+    <img id="record" src="../assets/record_bg.jpg" class="md-raised md-primary link" @click="$router.push('/record')" />
+    <img id="rank" src="../assets/rank_bg.jpg" class="md-raised md-primary link" @click="$router.push('/ranking')" />
   </div>
 </template>
 
