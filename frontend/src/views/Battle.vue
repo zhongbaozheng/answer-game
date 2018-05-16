@@ -254,6 +254,14 @@ export default {
   @import "~vue-material/dist/theme/engine";
   $yellow-color: md-get-palette-color(yellow, A400);
 
+  .header {
+    padding: 10px 8px 0;
+    color: white;
+    .text {
+      margin-left: 10px;
+    }
+  }
+
   .battle {
     width: 100%;
     height: 92vh;

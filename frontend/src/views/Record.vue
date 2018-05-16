@@ -70,6 +70,8 @@ export default {
   }
 
   .header {
+    padding: 10px 8px 0;
+    color: white;
     .text {
       margin-left: 10px;
     }
