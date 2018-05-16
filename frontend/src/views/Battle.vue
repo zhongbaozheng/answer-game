@@ -76,7 +76,7 @@
         </div>
         <div class="md-layout-item">
           <p class="question">{{currentRecordQuestion}}</p>
-          <p class="tips" v-if="!currentRecordAnswer">本题未选择答案</p>
+          <p class="tips" v-if="!currentRecordAnswer || currentRecordAnswer === 'TimeOut'">本题未选择答案</p>
           <div class="answers">
             <div v-for="option in currentRecordOptions" class="answer-option md-elevation-1" :class="{
               correct: currentRecordAnswer === option.name && currentRecordAnswer === currentRecordQuestionAnswer,
