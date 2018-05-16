@@ -2,8 +2,7 @@
 frontend build
 ---
  
-1. modify the api root of backend address in ```/frontend/src/http.js line 5``` ;
-2. modify the socket address in ```/frontend/src/views/TopicChosen.vue line 40``` and ```/frontend/src/views/Battle.vue line 104```
+1. modify the api root of backend address and the socket address in ```/frontend/src/config.js``` ;
 3. 
 ``` shell
 cd frontend

@@ -4,6 +4,57 @@
   </div>
 </template>
 
+<script>
+  import { mapState } from 'vuex'
+
+  export default {
+    name: 'app',
+    computed: mapState({
+      user: state => state.user,
+      mchId: state => state.mchId
+    }),
+    mounted () {
+      // 如果当前是在登录状态中，发送 online
+      if (this.user) {
+        this.$socket.emit('online', { userId: this.user.uid, mchId: this.mchId });
+      }
+
+      //当 user 登录之后发送 online
+      this.$watch('user', () => {
+        if (this.user) {
+          this.$socket.emit('online', { userId: this.user.uid, mchId: this.mchId });
+        } else {
+          this.$router.replace('/login');
+        }
+      });
+
+      //每一次重连都要重新发送 online
+      this.$socket.on('connect', ()=> {
+        if (this.user) {
+          this.$socket.emit('online', { userId: this.user.uid, mchId: this.mchId });
+        }
+      });
+
+      this.$socket.on('logout', ({userId, mchId}) => {
+        if (this.user && this.user.uid === userId && this.mchId !== mchId) {
+          this.$store.commit('logout');
+        }
+      });
+      this.$socket.on('fight', ({userIds, chapterId, roomId, chapterName}) => {
+        if (userIds
+            .map(id => parseInt(id))
+            .findIndex(v => v === this.user.uid) !== -1) {
+          if (this.$router.currentRoute.name === 'battle') {
+            this.$router.replace({ path: '/battle', query: { roomId, chapterId, chapterName }});
+          } else {
+            this.$router.push({ path: '/battle', query: { roomId, chapterId, chapterName }});
+          }
+        }
+      })
+    }
+  };
+</script>
+
 <style lang="scss">
 #app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;

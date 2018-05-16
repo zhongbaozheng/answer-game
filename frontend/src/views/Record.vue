@@ -21,10 +21,10 @@
         <md-table-row>
           <md-table-head md-numeric>作答时间</md-table-head>
           <md-table-head>题目名称</md-table-head>
-          <md-table-head>做过的次数</md-table-head>
+          <md-table-head>次数</md-table-head>
         </md-table-row>
         <md-table-row v-for="question in questionRecord">
-          <md-table-head md-numeric>{{question.answertime}}</md-table-head>
+          <md-table-head md-numeric>{{moment.unix(parseInt(question.answertime)).fromNow()}}</md-table-head>
           <md-table-head>{{question.question}}</md-table-head>
           <md-table-head>{{question.count}}</md-table-head>
         </md-table-row>
@@ -36,6 +36,7 @@
 <script>
 // @ is an alias to /src
 import PersonCard from '@/components/PersonCard.vue';
+import moment from 'moment';
 
 export default {
   components: {PersonCard},
@@ -43,7 +44,8 @@ export default {
   data: () => ({
     questionRecord: [],
     totalQuesstion: '0',
-    totalSession: '0'
+    totalSession: '0',
+    moment
   }),
   mounted () {
     this.$http.post('/user/getUserGains', {
@@ -82,5 +84,17 @@ export default {
 
   .md-card {
     margin: 10px;
+  }
+
+  @media (max-width: 945px) {
+    .md-table-head {
+      max-width: 40vw;
+    }
+  }
+
+  @media (min-width: 945px) {
+    .md-table-head {
+      max-width: 20vw;
+    }
   }
 </style>

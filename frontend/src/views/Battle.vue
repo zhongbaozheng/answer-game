@@ -52,7 +52,6 @@
     </div>
     <md-snackbar md-position="left" :md-duration="1000" :md-active.sync="showSnackbar" md-persistent>
       <span>{{snackMsg}}</span>
-      <md-button class="md-primary" @click="showSnackbar = false">Retry</md-button>
     </md-snackbar>
     <md-dialog :md-active.sync="waiting">
       <md-dialog-title>{{waitMsg}}</md-dialog-title>
@@ -62,7 +61,7 @@
     </md-dialog>
     <md-dialog :md-active.sync="result">
       <md-dialog-title>{{resultMsg}}</md-dialog-title>
-      <p v-if="uploading">结果上传中……</p>
+      <p class="uploading" v-if="uploading">结果上传中……</p>
       <md-dialog-actions>
         <md-button :disabled="uploading" class="md-primary" @click="goBack()">返回</md-button>
       </md-dialog-actions>
@@ -72,6 +71,7 @@
 
 <script>
 import io from 'socket.io-client';
+import config from '@/config';
 
 export default {
   name: 'battle',
@@ -95,17 +95,22 @@ export default {
     resultMsg: '',
     uploading: false,
     time: 10,
-    timer: null
+    timer: null,
+    isOver: false
   }),
   mounted () {
+    // 取得对战相关信息
     const query = this.$router.currentRoute.query;
     this.roomId = query.roomId;
     this.chapterId = query.chapterId;
     this.chapterName = query.chapterName;
     this.questions = [];
 
-    const playRoom = io(`http://125.216.112.121:8001/room/${this.roomId}`);
+    // 连接对战房间并且发送准备信号
+    const playRoom = io(`${config.socketRoot}/room/${this.roomId}`);
     playRoom.emit('ready', { userId: this.$store.state.user.uid, chapterId: this.chapterId });
+
+    // 接收到开始信号时初始化对战所需的变量并开始计时
     playRoom.on('begin', ({playerOne, playerTwo, questions}) => {
       if (parseInt(playerOne.uid) === this.$store.state.user.uid) {
         this.me = playerOne;
@@ -123,6 +128,7 @@ export default {
       this.startTimer();
     });
 
+    // 对手答题时判断是否正确并记录对手答案
     playRoom.on('opponentAnswer', ({ questionId, answer }) => {
       this.opponent.answers = this.opponent.answers || [];
       this.opponent.answers.push({ questionId, answer });
@@ -135,10 +141,24 @@ export default {
       }
     });
 
+    /**
+     * 对战结束时
+     * 1. 判断是否已经完成了答题等待对手完成，如果是关掉等待窗口
+     * 2. 判断是否对手退出导致的对战完成，显示不同结果
+     * 3. 判断是否需要自己上传对战记录，如果是上传
+     * 4. 标记对战完成并断开连接
+     */
     playRoom.on('over', ({opponentQuit, requestUserId}) => {
+      if (this.waiting) {
+        this.waiting = false;
+      }
+
       if (opponentQuit === true) {
         this.showQuitResult();
+      } else {
+        this.showResult();
       }
+
       if (requestUserId === this.$store.state.user.uid) {
         this.uploading = true;
         this.$http.post('/brain/saveAnswers', {
@@ -153,12 +173,21 @@ export default {
           this.uploading = false;
         });
       }
+      this.isOver = true;
       playRoom.disconnect(true)
     });
 
     this.playRoom = playRoom;
   },
+  // 用户离开这个页面的时候，如果还未完成答题直接发送退出信号并且断开连接
+  beforeDestroy () {
+    if (!this.isOver) {
+      this.playRoom.emit('quit', { userId: this.$store.state.user.uid, chapterId: this.chapterId });
+      this.playRoom.disconnect(true)
+    }
+  },
   methods: {
+    // 倒计时
     startTimer () {
       if (this.timer) window.clearInterval(this.timer);
       this.time = 10;
@@ -171,7 +200,6 @@ export default {
       }, 1000);
     },
     goBack () {
-      this.playRoom.emit('quit', { userId: this.$store.state.user.uid, chapterId: this.chapterId });
       this.$router.back();
     },
     showSnackBarMethod (msg) {
@@ -193,8 +221,10 @@ export default {
       this.result = true;
     },
     showQuitResult () {
-      this.resultMsg = `@${this.opponent.userName} 落荒而逃，你赢得了比赛。`;
-      this.result = true;
+      if (this.opponent) {
+        this.resultMsg = `@${this.opponent.userName} 落荒而逃，你赢得了比赛。`;
+        this.result = true;
+      }
     },
     select (option) {
       this.me.answers = this.me.answers || [];
@@ -212,7 +242,8 @@ export default {
         this.startTimer();
       } else {
         this.playRoom.emit('finish', {userId: this.$store.state.user.uid});
-        this.showResult();
+        this.showWaitingMethod('你已完成答题，请等待对手完成');
+        if (this.timer) window.clearInterval(this.timer);
       }
     }
   },
@@ -302,6 +333,10 @@ export default {
         word-wrap:break-word;
         white-space: normal;
       }
+    }
+
+    .uploading {
+      padding: 8px;
     }
   }
 </style>

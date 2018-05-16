@@ -33,8 +33,7 @@ export default {
   }),
   methods: {
     logout() {
-      this.$store.commit('setUser', null);
-      this.$router.replace('/login');
+      this.$store.commit('logout');
     }
   }
 };
