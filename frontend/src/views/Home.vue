@@ -1,12 +1,12 @@
 <template>
   <div class="home">
     <div class="md-layout">
-      <div>通信工知识竞技对战平台</div>
-    </div>
+      <p>通信工知识竞技对战平台</p>
+    </div class="other">
     <person-card></person-card>
-    <md-button class="md-raised md-primary link" to="/topic-chosen">双人对战</md-button>
-    <md-button class="md-raised md-primary link" to="/record">战绩</md-button>
-    <md-button class="md-raised md-primary link" to="/ranking">排名</md-button>
+    <img id="fight" src="../assets/fight_bg.jpg" class="md-raised md-primary link" to="/topic-chosen" />
+    <img id="record" src="../assets/record_bg.jpg" class="md-raised md-primary link" to="/record" />
+    <img id="rank" src="../assets/rank_bg.jpg" class="md-raised md-primary link" to="/ranking" />
   </div>
 </template>
 
@@ -22,10 +22,25 @@ export default {
 
 <style lang="scss" scoped>
 
+  .home {
+    height: 100%;
+  }
+  
+  .md-layout p {
+    font-size: 16px;
+    color: white;
+    margin-top: 2vw;
+    margin-left: 2vw;
+  }
+
   .link {
     width: calc(100% - 16px);
-    height: 18vh;
-    margin: 8px;
+    margin: 5px 1%;
+    border-radius: 10px;
     font-size: 18px;
+  }
+
+  #record, #rank {
+    width: 47%;
   }
 </style>

@@ -52,7 +52,12 @@ export default {
   }
 
   .name {
-    margin: 5px 0;
+    margin-top: 10px;
+  }
+
+  .md-primary {
+    background: url("../assets/title_bg.png") no-repeat 87%;
+    border-radius: 15px;
   }
 
   .level {

@@ -56,12 +56,25 @@
 </script>
 
 <style lang="scss">
+html,body,#app {
+  height: 100%;
+}
 #app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  padding: 2vw;
+  background-image: url('./assets/bg.png');
+  background-repeat: no-repeat;
+  background-color: #216EC6;
+  background-size: 100%;
+  background-position: bottom;
+}
+
+@media screen and (min-width: 945px) {
+  #app {
+    background-image: url('./assets/bg.jpg');
+  }
 }
 </style>
