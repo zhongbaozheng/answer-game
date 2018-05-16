@@ -1,7 +1,7 @@
 <template>
   <div id="app" class="md-layout md-alignment-center-center">
-    <router-view class="md-layout-item md-small-size-100 md-size-50"/>
     <div class="bg"></div>
+    <router-view class="md-layout-item md-small-size-100 md-size-50"/>
   </div>
 </template>
 
@@ -65,11 +65,10 @@ html,body,#app {
   width: 100%;
   height: 100%;
   position: fixed;
-  background: url('./assets/bg.jpg') no-repeat;
-  background-size: 100%;
-  background-position: bottom;
   bottom: 0;
-  z-index: 1;
+  background: #216EC6 url('./assets/bg.jpg') no-repeat bottom;
+  background-size:  100%;
+  z-index: -1;
 }
 
 #app {
@@ -78,6 +77,5 @@ html,body,#app {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  background-color: #216EC6;
 }  
 </style>
