@@ -95,4 +95,8 @@ export default {
     background-image: none;
     color: white;
   }
+
+  .md-field.md-theme-default.md-focused label {
+    color: white;
+  }
 </style>

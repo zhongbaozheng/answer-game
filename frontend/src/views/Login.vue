@@ -94,4 +94,7 @@ export default {
     color: white;
   }
 
+  .md-field.md-theme-default.md-focused label {
+    color: white;
+  }
 </style>

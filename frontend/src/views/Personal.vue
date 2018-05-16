@@ -93,13 +93,18 @@ export default {
     color: rgba(255,255,255,0.9)
   }
 
-  .md-card.md-layout-item {
+  .personal.md-layout-item.md-small-size-100.md-size-50 {
     background-image: url('../assets/bg.png');
     background-repeat: no-repeat;
     background-color: #216EC6;
     background-size: 100%;
     background-position: bottom;
     padding-bottom: 120px;
+  }
+
+  .md-card.md-theme-default {
+    background: transparent;
+    box-shadow: 0 0 0 transparent;
   } 
 
   .md-field.md-theme-default label {
@@ -123,4 +128,8 @@ export default {
     background-image: none;
     color: white;
   }
+  .md-field.md-theme-default.md-focused label {
+    color: white;
+  }
+
 </style>
