@@ -77,13 +77,14 @@ export default {
 <style lang="scss" scoped>
   .personal {
     background: transparent;
+    background: transparent;
+    box-shadow: 0 0 0 transparent;
+    height: 100%;
   }
 
   .header {
     .text {
       margin-left: 10px;
-      background: transparent;
-      box-shadow: 0 0 0 transparent;
     }
   }
 

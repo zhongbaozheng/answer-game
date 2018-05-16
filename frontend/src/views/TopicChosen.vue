@@ -81,6 +81,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+  .topic-chosen {
+    height: 100%;
+  }
+
   .header {
     .text {
       margin-left: 10px;
@@ -89,5 +93,31 @@ export default {
 
   .md-list {
     margin: 8px;
+    border-radius: 10px;
+  }
+
+  .md-list-item-expand.md-list-item-container.md-button-clean {
+    border-radius: 10px;
+    border: 2px solid #0F53A1;
+    background: #D7EAFF;
+  }
+
+  .md-list.md-theme-default .md-list-item-container:not(.md-list-item-default):not([disabled]):hover{
+    border-radius: 10px;
+    border: 2px solid #0F53A1;
+    background: #D7EAFF;
+  }
+
+  .md-list-item-expand.md-list-item-container.md-button-clean.md-active{
+    background: #D7EAFF;
+  }
+
+  .md-list.md-elevation-2.md-theme-default {
+    padding: 0;
+    background: transparent;
+  }
+
+  .md-list-item-text {
+    color: #377CCD;
   }
 </style>

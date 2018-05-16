@@ -24,6 +24,7 @@ export default {
 
   .home {
     height: 100%;
+    background: transparent;
   }
   
   .md-layout p {
