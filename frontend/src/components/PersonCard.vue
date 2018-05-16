@@ -56,7 +56,8 @@ export default {
   }
 
   .md-primary {
-    background: url("../assets/title_bg.png") no-repeat 87%;
+    background: url("../assets/title_bg.jpg") no-repeat;
+    background-size: cover;
     border-radius: 15px;
   }
 
