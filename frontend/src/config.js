@@ -1,7 +1,7 @@
 const DEV_CONFIG = {
   apiRoot: 'http://brain.vipgz1.idcfengye.com',
   // socketRoot: 'http://localhost:8001',
-  socketRoot: 'http://207wd53175.imwork.net:56025',
+  socketRoot: 'http://207wd53175.imwork.net:56470',
 };
 
 const PROD_CONFIG = {

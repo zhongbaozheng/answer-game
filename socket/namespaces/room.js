@@ -10,6 +10,7 @@ module.exports = (io, roomId) => {
     // 用户加载完成
     socket.on('ready', async (data) => {
       // 更新用户对战状态
+      console.log(data.userId)
       await PlayingUser.add([data.userId])
       socket.userId = data.userId
       room.users.add(data.userId)
@@ -28,7 +29,7 @@ module.exports = (io, roomId) => {
         try {
           const result = await request({
             method: 'POST',
-            uri: 'http://125.216.112.121:8083/brain/getQuestions',
+            uri: 'http://brain.vipgz1.idcfengye.com/brain/getQuestions',
             body: options,
             json: true
           })

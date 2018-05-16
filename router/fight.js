@@ -28,11 +28,14 @@ router.post('/', async (ctx, next) => {
     PlayingUser.includes(ctx.request.body.userIds[1])
   ])
   if (!online1 || !online2) {
+    console.log('玩家不在线')
     ctx.error(null, '玩家不在线', 500)
     return
   }
   if (playing1 || playing2) {
+    console.log('玩家对战中')
     ctx.error(null, '玩家对战中', 500)
+    return
   }
   const roomId = uuid.v4()
   Room(Io, roomId)
