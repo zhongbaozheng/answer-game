@@ -22,7 +22,7 @@ module.exports = function (app) {
       socket.disconnect(true)
     })
     socket.on('disconnect', async () => {
-      await OnlineUser.remove([socket.userId])
+      await OnlineUser.remove([socket.userId])   
       socket.disconnect(true)
     })
   })

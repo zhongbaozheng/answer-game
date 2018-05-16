@@ -192,4 +192,9 @@ export default {
   .other-rank-content {
     color: #656566;
   }
+
+  .md-content.md-table.md-theme-default {
+    over-flow: auto;
+    height: 61vh;
+  }
 </style>

@@ -76,7 +76,7 @@
         </div>
         <div class="md-layout-item">
           <p class="question">{{currentRecordQuestion}}</p>
-          <p class="tips" v-if="!currentRecordAnswer || currentRecordAnswer === 'TimeOut'">本题未选择答案</p>
+          <p class="tips" v-if="!currentRecordAnswer || currentRecordAnswer === 'no'">本题未选择答案</p>
           <div class="answers">
             <div v-for="option in currentRecordOptions" class="answer-option md-elevation-1" :class="{
               correct: currentRecordAnswer === option.name && currentRecordAnswer === currentRecordQuestionAnswer,
@@ -223,10 +223,10 @@ export default {
         this.$http.post('/brain/saveAnswers', {
           result : [{
             userId : this.me.uid,
-            answers : this.me.answers.filter(a => a.answer !== 'TimeOut')
+            answers : this.me.answers
           },{
             userId : this.opponent.uid,
-            answers : this.opponent.answers.filter(a => a.answer !== 'TimeOut')
+            answers : this.opponent.answers
           }]
         }).then(data => {
           console.log('上传答案成功');
@@ -255,7 +255,7 @@ export default {
         this.time--;
         if(this.time === 0) {
           window.clearInterval(this.timer);
-          this.select({name: 'TimeOut'});
+          this.select({name: 'no'});
         }
       }, 1000);
     },
