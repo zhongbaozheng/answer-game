@@ -1,4 +1,5 @@
 const request = require('request-promise')
+const { PlayingUser } = require('../../library/fightState')
 
 module.exports = (io, roomId) => {
   const room = io.of(`/room/${roomId}`)
@@ -8,15 +9,20 @@ module.exports = (io, roomId) => {
   room.on('connect', (socket) => {
     // 用户加载完成
     socket.on('ready', async (data) => {
-      // 将userId添加到房间中
+      // 更新用户对战状态
+      await PlayingUser.add([data.userId])
+      socket.userId = data.userId
       room.users.add(data.userId)
       // 当房间内人数达到两人时开启游戏
       if (room.users.size === 2 && room.begin === false) {
         room.begin = true
         const getFunc = room.users.values()
+        const playerOne = Number(getFunc.next().value)
+        const playerTwo = Number(getFunc.next().value)
+        room.playingUsers = [playerOne, playerTwo]
         const options = {
-          playerOne: Number(getFunc.next().value),
-          playerTwo: Number(getFunc.next().value),
+          playerOne,
+          playerTwo,
           chapterId: data.chapterId
         }
         try {
@@ -38,21 +44,26 @@ module.exports = (io, roomId) => {
       socket.broadcast.emit('opponentAnswer', data)
     })
     // 用户完成对战所有题目
-    socket.on('finish', (data) => {
+    socket.on('finish', async (data) => {
       room.users.delete(data.userId)
       room.requestUserId = room.requestUserId || data.userId
       if (room.users.size === 0 && room.begin === true) {
+        await PlayingUser.remove(room.playingUsers)
         room.emit('over', { opponentQuit: false, requestUserId: room.requestUserId })
       }
     })
     // 用户中途退出房间
-    socket.on('quit', (data) => {
+    socket.on('quit', async (data) => {
+      // 清除用户对战状态，结束对战
+      await PlayingUser.remove([data.userId])
       room.users.delete(data.userId)
       room.requestUserId = room.users.values().next().value
       room.emit('over', { opponentQuit: true, requestUserId: room.requestUserId })
     })
     // 用户断开连接
     socket.on('disconnect', async () => {
+      // 清除用户对战状态，结束对战
+      await PlayingUser.remove([socket.userId])
       room.requestUserId = room.users.values().next().value
       room.emit('over', { opponentQuit: true, requestUserId: room.requestUserId })
     })

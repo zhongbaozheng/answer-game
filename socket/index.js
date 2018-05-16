@@ -1,25 +1,6 @@
 const { port } = require('config').socket
 const match = require('./namespaces/match')
-
-const prefix = {
-  onlineUsers () {
-    return 'onlineUsers'
-  }
-}
-
-const isOnlineUser = async (userId) => {
-  const result = await Cache.sismember(prefix.onlineUsers(), userId)
-  return result
-}
-
-const addOnlineUser = async (userId) => {
-  const result = await Cache.sadd(prefix.onlineUsers(), userId)
-  return result
-}
-
-const deleteOnlineUser = async (userId) => {
-  await Cache.srem(prefix.onlineUsers(userId), userId)
-}
+const { OnlineUser } = require('../library/fightState')
 
 module.exports = function (app) {
   var server = require('http').Server(app.callback())
@@ -31,17 +12,17 @@ module.exports = function (app) {
   io.on('connect', (socket) => {
     socket.on('online', async (data) => {
       socket.userId = data.userId
-      if (isOnlineUser(data.userId)) {
+      if (OnlineUser.includes(data.userId)) {
         io.emit('logout', { userId: data.userId, mchId: data.mchId })
       }
-      await addOnlineUser(data.userId)
+      await OnlineUser.add(data.userId)
     })
     socket.on('off', async (data) => {
-      await deleteOnlineUser(data.userId)
+      await OnlineUser.remove([data.userId])
       socket.disconnect(true)
     })
     socket.on('disconnect', async () => {
-      await deleteOnlineUser(socket.userId)
+      await OnlineUser.remove([socket.userId])
       socket.disconnect(true)
     })
   })
