@@ -44,7 +44,7 @@ export default {
           .map(id => parseInt(id))
           .findIndex(v => v === this.$store.state.user.uid) !== -1) {
         this.matchRoom.disconnect();
-        this.$router.push({ path: 'battle', query: { roomId: data.roomId, chapterId: this.matchingId, chapterName: this.matchingName }});
+        this.$router.push({ path: '/battle', query: { roomId: data.roomId, chapterId: this.matchingId, chapterName: this.matchingName }});
       }
     })
   },

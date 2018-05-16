@@ -1,13 +1,6 @@
 <template>
   <div id="app" class="md-layout md-alignment-center-center">
     <router-view class="md-layout-item md-small-size-100 md-size-50"/>
-    <md-dialog :md-active.sync="showFight">
-      <md-dialog-title>新的挑战出现了，是否迎接挑战？</md-dialog-title>
-      <md-dialog-actions>
-        <md-button class="md-primary" @click="fight()">迎接</md-button>
-        <md-button class="md-accent" @click="donotFight()">不迎接</md-button>
-      </md-dialog-actions>
-    </md-dialog>
   </div>
 </template>
 
@@ -16,14 +9,6 @@
 
   export default {
     name: 'app',
-    data: () => ({
-      showFight: false,
-      newFight: {
-        roomId: '',
-        chapterId: -1,
-        chapterName: ''
-      }
-    }),
     computed: mapState({
       user: state => state.user,
       mchId: state => state.mchId
@@ -51,7 +36,7 @@
       });
 
       this.$socket.on('logout', ({userId, mchId}) => {
-        if (this.user && this.user.uid === userId && this.mchId === mchId) {
+        if (this.user && this.user.uid === userId && this.mchId !== mchId) {
           this.$store.commit('logout');
         }
       });
@@ -59,21 +44,13 @@
         if (userIds
             .map(id => parseInt(id))
             .findIndex(v => v === this.user.uid) !== -1) {
-          this.showFight = true;
-          this.newFight.roomId = roomId;
-          this.newFight.chapterId = chapterId;
-          this.newFight.chapterName = chapterName;
+          if (this.$router.currentRoute.name === 'battle') {
+            this.$router.replace({ path: '/battle', query: { roomId, chapterId, chapterName }});
+          } else {
+            this.$router.push({ path: '/battle', query: { roomId, chapterId, chapterName }});
+          }
         }
       })
-    },
-    methods: {
-      fight () {
-        this.showFight = false;
-        this.$router.push({ path: 'battle', query: this.newFight});
-      },
-      donotFight () {
-        this.showFight = false;
-      }
     }
   };
 </script>
