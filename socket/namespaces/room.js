@@ -56,16 +56,19 @@ module.exports = (io, roomId) => {
     // 用户中途退出房间
     socket.on('quit', async (data) => {
       // 清除用户对战状态，结束对战
-      await PlayingUser.remove([data.userId])
+      await PlayingUser.remove(room.playingUsers)
       room.users.delete(data.userId)
-      room.requestUserId = room.users.values().next().value
+      
+      room.requestUserId = room.playingUsers[0] === socket.userId ? room.playingUsers[1] : room.playingUsers[0]
       room.emit('over', { opponentQuit: true, requestUserId: room.requestUserId })
     })
     // 用户断开连接
     socket.on('disconnect', async () => {
       // 清除用户对战状态，结束对战
-      await PlayingUser.remove([socket.userId])
-      room.requestUserId = room.users.values().next().value
+      await PlayingUser.remove(room.playingUsers)
+      room.users.delete(socket.userId)
+
+      room.requestUserId = room.playingUsers[0] === socket.userId ? room.playingUsers[1] : room.playingUsers[0]
       room.emit('over', { opponentQuit: true, requestUserId: room.requestUserId })
     })
   })
