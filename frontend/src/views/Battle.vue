@@ -4,7 +4,7 @@
       <icon name="angle-left" scale="2"></icon>
       <span class="text">对战</span>
     </div>
-    <div class="battle md-elevation-2">
+    <div v-if="!showingRecord" class="battle md-elevation-2">
       <div class="battle-header">
         <div v-if="me" class="me">
           <div class="avatar">
@@ -35,18 +35,57 @@
           <div>{{myRightCount}}/5</div>
         </div>
         <div class="md-layout-item">
-          <template >
-            <p class="question">{{currentQuestion}}</p>
-            <div class="answers">
-              <md-button v-for="option in currentOptions" @click="select(option)" class="md-raised">{{option.name}}: {{option.value}}</md-button>
-            </div>
-          </template>
+          <p class="question">{{currentQuestion}}</p>
+          <div class="answers">
+            <div v-for="option in currentOptions" @click="select(option)" class="answer-option md-elevation-1">{{option.name}}: {{option.value}}</div>
+          </div>
         </div>
         <div class="counter">
           <div class="bar">
             <div class="fill" :style="{height: `${20 * opponentRightCount}%`}"></div>
           </div>
           <div>{{opponentRightCount}}/5</div>
+        </div>
+      </div>
+    </div>
+    <div v-if="showingRecord" class="battle md-elevation-2">
+      <div class="battle-header">
+        <div v-if="me" class="me">
+          <div class="avatar">
+            <md-avatar class="md-large">
+              <img src="@/assets/logo.png" alt="Avatar">
+            </md-avatar>
+          </div>
+          <span>{{me.userName}}</span>
+        </div>
+        <div class="timer">
+          <div class="chapter">对战回顾</div>
+        </div>
+        <div v-if="opponent" class="opponent">
+          <div class="avatar">
+            <md-avatar class="md-large">
+              <img src="@/assets/logo.png" alt="Avatar">
+            </md-avatar>
+          </div>
+          <span>{{opponent.userName}}</span>
+        </div>
+      </div>
+      <div class="md-layout">
+        <div class="switch" @click="switchRecord(-1)" :class="{hidden: currentRecordIndex === 0}">
+          <icon name="angle-left" scale="2"></icon>
+        </div>
+        <div class="md-layout-item">
+          <p class="question">{{currentRecordQuestion}}</p>
+          <p class="tips" v-if="!currentRecordAnswer">本题未选择答案</p>
+          <div class="answers">
+            <div v-for="option in currentRecordOptions" class="answer-option md-elevation-1" :class="{
+              correct: currentRecordAnswer === option.name && currentRecordAnswer === currentRecordQuestionAnswer,
+              error: currentRecordAnswer === option.name && currentRecordAnswer !== currentRecordQuestionAnswer
+            }">{{option.name}}: {{option.value}}</div>
+          </div>
+        </div>
+        <div class="switch" @click="switchRecord(1)" :class="{hidden: currentRecordIndex === 4}">
+          <icon name="angle-right" scale="2"></icon>
         </div>
       </div>
     </div>
@@ -63,7 +102,7 @@
       <md-dialog-title>{{resultMsg}}</md-dialog-title>
       <p class="uploading" v-if="uploading">结果上传中……</p>
       <md-dialog-actions>
-        <md-button :disabled="uploading" class="md-primary" @click="goBack()">返回</md-button>
+        <md-button :disabled="uploading" class="md-primary" @click="showRecord()">查看本次对战回顾</md-button>
       </md-dialog-actions>
     </md-dialog>
   </div>
@@ -75,6 +114,17 @@ import config from '@/config';
 
 export default {
   name: 'battle',
+  computed: {
+    currentRecordAnswer () {
+      if (this.me && this.me.answers && this.questions && this.questions[this.currentRecordIndex]) {
+        const answer = this.me.answers.find(a => a.questionId === this.questions[this.currentRecordIndex].questionId);
+        if (answer) {
+          return answer.answer;
+        }
+      }
+      return false;
+    }
+  },
   data: () => ({
     second: 10,
     me: null,
@@ -96,7 +146,12 @@ export default {
     uploading: false,
     time: 10,
     timer: null,
-    isOver: false
+    isOver: false,
+    showingRecord: false,
+    currentRecordQuestion: '',
+    currentRecordOptions: [],
+    currentRecordQuestionAnswer: '',
+    currentRecordIndex: 0
   }),
   mounted () {
     // 取得对战相关信息
@@ -112,6 +167,7 @@ export default {
 
     // 接收到开始信号时初始化对战所需的变量并开始计时
     playRoom.on('begin', ({playerOne, playerTwo, questions}) => {
+      console.log('begin');
       if (parseInt(playerOne.uid) === this.$store.state.user.uid) {
         this.me = playerOne;
         this.opponent = playerTwo;
@@ -124,6 +180,9 @@ export default {
       this.questions = questions;
       this.currentQuestion = this.questions[this.currentQuestionIndex].question;
       this.currentOptions = this.questions[this.currentQuestionIndex].options;
+      this.currentRecordQuestion = this.questions[this.currentRecordIndex].question;
+      this.currentRecordOptions = this.questions[this.currentRecordIndex].options;
+      this.currentRecordQuestionAnswer = this.questions[this.currentRecordIndex].answer;
       this.waiting = false;
       this.startTimer();
     });
@@ -170,6 +229,7 @@ export default {
             answers : this.opponent.answers.filter(a => a.answer !== 'TimeOut')
           }]
         }).then(data => {
+          console.log('上传答案成功');
           this.uploading = false;
         });
       }
@@ -245,6 +305,16 @@ export default {
         this.showWaitingMethod('你已完成答题，请等待对手完成');
         if (this.timer) window.clearInterval(this.timer);
       }
+    },
+    showRecord () {
+      this.showingRecord = true;
+      this.result = false;
+    },
+    switchRecord (i) {
+      this.currentRecordIndex += i;
+      this.currentRecordQuestion = this.questions[this.currentRecordIndex].question;
+      this.currentRecordOptions = this.questions[this.currentRecordIndex].options;
+      this.currentRecordQuestionAnswer = this.questions[this.currentRecordIndex].answer;
     }
   },
 };
@@ -330,16 +400,55 @@ export default {
       }
     }
 
+    .switch {
+      margin: 10px;
+      border: none;
+      padding: 0;
+      box-shadow: 0 2px 5px rgba(0,0,0,.16);
+      border-radius: 2px;
+      width: 40px;
+      background-color: #f5f6f7;
+      color: #888;
+      position: relative;
+
+      &.hidden {
+        visibility: hidden;
+      }
+
+      svg {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        -webkit-transform: translate(-50%,-50%);
+        transform: translate(-50%,-50%);
+      }
+    }
+
+    .tips {
+      font-size: 12px;
+    }
+
     .answers {
       display: flex;
       flex-direction: column;
       align-items: center;
 
-      .md-button {
+      .answer-option {
         margin: 0 0 15px;
+        padding: 8px;
         width: 70%;
-        word-wrap:break-word;
-        white-space: normal;
+        background-color: #fff;
+        border-radius: 3px;
+        color: rgba(0, 0, 0, 0.87);
+        word-break: break-all;
+
+        &.correct {
+          background-color: rgba(0, 224, 0, 0.87);
+        }
+
+        &.error {
+          background-color: #f7943e;
+        }
       }
     }
 
