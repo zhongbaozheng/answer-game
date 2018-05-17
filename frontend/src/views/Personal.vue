@@ -26,7 +26,7 @@
             <label>确认新密码</label>
             <md-input v-model="confirmNewPassword" type="password"></md-input>
           </md-field>
-          <md-button @click="update()" :disabled="!newPassword" class="md-raised md-primary md-layout-item md-size-75">确认更改</md-button>
+          <md-button @click="update()" :disabled="!nickname || !oldPassword || !newPassword ||  !confirmNewPassword" class="md-raised md-primary md-layout-item md-size-75">确认更改</md-button>
         </div>
       </md-card-content>
       <md-snackbar md-position="left" :md-duration="2000" :md-active.sync="showSnack" md-persistent>
