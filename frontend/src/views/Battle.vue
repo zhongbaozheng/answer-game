@@ -488,7 +488,7 @@ export default {
 
       .answer-option {
         margin: 0 0 15px;
-        padding: 8px;
+        padding: 8px 24px;
         width: 70%;
         background-color: #fff;
         border-radius: 3px;
