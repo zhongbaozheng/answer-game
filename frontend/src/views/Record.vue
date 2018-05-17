@@ -43,15 +43,29 @@
       <md-dialog-title>战绩详情</md-dialog-title>
       <md-table>
         <md-table-row>
-          <md-table-head>问题</md-table-head>
-          <md-table-head>我的答案</md-table-head>
-          <md-table-head>对手答案</md-table-head>
-          <md-table-head>正确答案</md-table-head>
+          <md-table-head><span class="header-title">问题</span></md-table-head>
+          <md-table-head><span class="header-title">我的答案</span></md-table-head>
+          <md-table-head><span class="header-title">对手答案</span></md-table-head>
+          <md-table-head><span class="header-title">正确答案</span></md-table-head>
         </md-table-row>
         <md-table-row v-for="question in currentDetail">
           <md-table-head>{{question.question}}</md-table-head>
-          <md-table-head>{{detailPlayer === 1? question.answerOne : question.answerTwo}}</md-table-head>
-          <md-table-head>{{detailPlayer === 1? question.answerTwo : question.answerOne}}</md-table-head>
+          <md-table-head>
+            <span v-if="detailPlayer === 1" :class="[question.answerOne === question.right ? 'victory' : 'failure']">
+              {{ question.answerOne }}
+            </span>
+            <span v-else  v-bind:class="[question.answerTwo === question.right ? 'victory' : 'failure']">
+              {{question.answerTwo}}
+            </span>
+          </md-table-head>
+          <md-table-head>
+            <span v-if="detailPlayer === 1" :class="[question.answerTwo === question.right ? 'victory' : 'failure']">
+              {{ question.answerTwo }}
+            </span>
+            <span v-else  v-bind:class="[question.answerOne === question.right ? 'victory' : 'failure']">
+              {{question.answerOne}}
+            </span>
+          </md-table-head>
           <md-table-head>{{question.right}}</md-table-head>
         </md-table-row>
       </md-table>
@@ -156,13 +170,13 @@ export default {
   }
 
   .md-table-head-label {
-    padding: 0 10px;
+    padding: 0 5px;
     height: 56px;
     line-height: 56px;
   }
 
   .md-table-head:last-child .md-table-head-label {
-    padding-right: 10px;
+    padding-right: 5px;
   }
 
   .fa-icon {
@@ -177,5 +191,9 @@ export default {
 
   .failure {
     color: red;
+  }
+
+  .header-title {
+    font-size: 15px;
   }
 </style>
