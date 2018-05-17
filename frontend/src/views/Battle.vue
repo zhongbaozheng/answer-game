@@ -358,7 +358,7 @@ export default {
 <style lang="scss" scoped>
   @import "~vue-material/dist/theme/engine";
   $yellow-color: md-get-palette-color(yellow, A400);
-  $my-color: md-get-palette-color(red, A200);
+  $my-color: rgb(250, 83, 129);
   $opponent-color: md-get-palette-color(blue, 300);
 
   .header {
