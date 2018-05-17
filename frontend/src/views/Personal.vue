@@ -54,6 +54,11 @@ export default {
   methods: {
     update() {
       if (!this.newPassword) return;
+      if (this.oldPassword === this.newPassword) {
+        this.msg = '新密码与原密码一致';
+        this.showSnack = true;
+        return
+      }
       this.$http.post('/user/update', {
         uid: this.$store.state.user.uid,
         nickname: this.nickname,
