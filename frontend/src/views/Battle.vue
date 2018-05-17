@@ -205,7 +205,7 @@ export default {
       this.currentRecordOptions = this.questions[this.currentRecordIndex].options;
       this.currentRecordQuestionAnswer = this.questions[this.currentRecordIndex].answer;
       this.waiting = false;
-//      this.startTimer();
+      this.startTimer();
     });
 
     // 对手答题时判断是否正确并记录对手答案

@@ -24,7 +24,7 @@
           <md-table-head>对战结果</md-table-head>
           <md-table-head>对手</md-table-head>
         </md-table-row>
-        <md-table-row v-for="session in sessions" :key="session.sessionid">
+        <md-table-row @click="showDetails(session)" v-for="session in sessions" :key="session.sessionid">
           <md-table-head md-numeric>{{session.sessionid}}</md-table-head>
           <md-table-head md-numeric>{{moment.unix(parseInt(session.fighttime)).format('YYYY-MM-DD hh:mm:ss')}}
           </md-table-head>
@@ -39,6 +39,26 @@
         </md-table-row>
       </md-table>
     </md-card>
+    <md-dialog :md-active.sync="detail">
+      <md-dialog-title>战绩详情</md-dialog-title>
+      <md-table>
+        <md-table-row>
+          <md-table-head>问题</md-table-head>
+          <md-table-head>我的答案</md-table-head>
+          <md-table-head>对手答案</md-table-head>
+          <md-table-head>正确答案</md-table-head>
+        </md-table-row>
+        <md-table-row v-for="question in currentDetail">
+          <md-table-head>{{question.question}}</md-table-head>
+          <md-table-head>{{detailPlayer === 1? question.answerOne : question.answerTwo}}</md-table-head>
+          <md-table-head>{{detailPlayer === 1? question.answerTwo : question.answerOne}}</md-table-head>
+          <md-table-head>{{question.right}}</md-table-head>
+        </md-table-row>
+      </md-table>
+      <md-dialog-actions>
+        <md-button class="md-primary" @click="detail = false">返回</md-button>
+      </md-dialog-actions>
+    </md-dialog>
   </div>
 </template>
 
@@ -54,6 +74,9 @@ export default {
     sessions: [],
     totalQuesstion: '0',
     totalSession: '0',
+    detail: false,
+    detailPlayer: 0,
+    currentDetail: [],
     moment
   }),
   mounted () {
@@ -68,6 +91,15 @@ export default {
   methods: {
     goBack () {
       this.$router.back();
+    },
+    showDetails (session) {
+      if (session.users.userOne === this.$store.state.user.nickname) {
+        this.detailPlayer = 1;
+      } else {
+        this.detailPlayer = 2;
+      }
+      this.currentDetail = session.details;
+      this.detail = true;
     }
   },
 };
