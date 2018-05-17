@@ -22,6 +22,10 @@
             <label>新密码</label>
             <md-input v-model="newPassword" type="password"></md-input>
           </md-field>
+          <md-field class="md-layout-item md-size-75">
+            <label>确认新密码</label>
+            <md-input v-model="confirmNewPassword" type="password"></md-input>
+          </md-field>
           <md-button @click="update()" :disabled="!newPassword" class="md-raised md-primary md-layout-item md-size-75">确认更改</md-button>
         </div>
       </md-card-content>
@@ -38,6 +42,7 @@ export default {
   data: () => ({
     oldPassword: '',
     newPassword: '',
+    confirmNewPassword: '',
     msg: '',
     showSnack: false
   }),
@@ -58,6 +63,11 @@ export default {
         this.msg = '新密码与原密码一致';
         this.showSnack = true;
         return
+      } 
+      if (this.newPassword !== this.confirmNewPassword) {
+        this.msg = '新密码不一致';
+        this.showSnack = true;
+        return
       }
       this.$http.post('/user/update', {
         uid: this.$store.state.user.uid,
@@ -67,6 +77,10 @@ export default {
       }).then(() => {
         this.msg = '修改成功';
         this.showSnack = true;
+        var vm = this;
+        setTimeout(function() {
+          vm.$router.go(-1);
+        }, 2000);
       }).catch(res => {
         this.msg = res.msg;
         this.showSnack = true;

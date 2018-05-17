@@ -32,7 +32,7 @@
           <div class="bar">
             <div class="fill" :style="{height: `${20 * myRightCount}%`}"></div>
           </div>
-          <div>{{myRightCount}}/5</div>
+          <div>{{myRightCount}}/{{questions.length}}</div>
         </div>
         <div class="md-layout-item">
           <p class="question">{{currentQuestion}}</p>
@@ -44,7 +44,7 @@
           <div class="bar">
             <div class="fill" :style="{height: `${20 * opponentRightCount}%`}"></div>
           </div>
-          <div>{{opponentRightCount}}/5</div>
+          <div>{{opponentRightCount}}/{{questions.length}}</div>
         </div>
       </div>
     </div>
@@ -84,7 +84,7 @@
             }">{{option.name}}: {{option.value}}</div>
           </div>
         </div>
-        <div class="switch" @click="switchRecord(1)" :class="{hidden: currentRecordIndex === 4}">
+        <div class="switch" @click="switchRecord(1)" :class="{hidden: currentRecordIndex === (this.questions.length - 1)}">
           <icon name="angle-right" scale="2"></icon>
         </div>
       </div>
@@ -296,7 +296,7 @@ export default {
         this.showSnackBarMethod('你答对了~~');
       }
       this.currentQuestionIndex++;
-      if (this.currentQuestionIndex < 5) {
+      if (this.currentQuestionIndex < this.questions.length) {
         this.currentQuestion = this.questions[this.currentQuestionIndex].question;
         this.currentOptions = this.questions[this.currentQuestionIndex].options;
         this.startTimer();
