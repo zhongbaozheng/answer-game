@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div @click="goBack()" class="header md-layout md-alignment-center-left">
+    <div @click="showQuiting()" class="header md-layout md-alignment-center-left">
       <icon name="angle-left" scale="2"></icon>
       <span class="text">对战</span>
     </div>
@@ -9,10 +9,10 @@
         <div v-if="me" class="me">
           <div class="avatar">
             <md-avatar class="md-large">
-              <img src="@/assets/logo.png" alt="Avatar">
+              <img src="@/assets/avatar.jpg" alt="Avatar">
             </md-avatar>
           </div>
-          <span>{{me.userName}}</span>
+          <span class="user-name">{{me.userName}}</span>
         </div>
         <div class="timer">
           <div class="seconds">{{time}}S</div>
@@ -21,7 +21,7 @@
         <div v-if="opponent" class="opponent">
           <div class="avatar">
             <md-avatar class="md-large">
-              <img src="@/assets/logo.png" alt="Avatar">
+              <img src="@/assets/avatar.jpg" alt="Avatar">
             </md-avatar>
           </div>
           <span>{{opponent.userName}}</span>
@@ -30,7 +30,7 @@
       <div class="md-layout">
         <div class="counter">
           <div class="bar">
-            <div class="fill" :style="{height: `${20 * myRightCount}%`}"></div>
+            <div class="fill" :style="{height: `${myRightCount / questions.length * 100}%`}"></div>
           </div>
           <div>{{myRightCount}}/{{questions.length}}</div>
         </div>
@@ -42,7 +42,7 @@
         </div>
         <div class="counter">
           <div class="bar">
-            <div class="fill" :style="{height: `${20 * opponentRightCount}%`}"></div>
+            <div class="fill" :style="{height: `${opponentRightCount / questions.length * 100}%`}"></div>
           </div>
           <div>{{opponentRightCount}}/{{questions.length}}</div>
         </div>
@@ -53,7 +53,7 @@
         <div v-if="me" class="me">
           <div class="avatar">
             <md-avatar class="md-large">
-              <img src="@/assets/logo.png" alt="Avatar">
+              <img src="@/assets/avatar.jpg" alt="Avatar">
             </md-avatar>
           </div>
           <span>{{me.userName}}</span>
@@ -64,7 +64,7 @@
         <div v-if="opponent" class="opponent">
           <div class="avatar">
             <md-avatar class="md-large">
-              <img src="@/assets/logo.png" alt="Avatar">
+              <img src="@/assets/avatar.jpg" alt="Avatar">
             </md-avatar>
           </div>
           <span>{{opponent.userName}}</span>
@@ -76,12 +76,15 @@
         </div>
         <div class="md-layout-item">
           <p class="question">{{currentRecordQuestion}}</p>
-          <p class="tips" v-if="!currentRecordAnswer || currentRecordAnswer === 'no'">本题未选择答案</p>
+          <p class="tips" v-if="!currentRecordAnswer || currentRecordAnswer === 'no'">本题你未选择答案</p>
+          <p class="tips" v-if="!currentOpponentRecordAnswer || currentOpponentRecordAnswer === 'no'">本题对手未选择答案</p>
           <div class="answers">
             <div v-for="option in currentRecordOptions" class="answer-option md-elevation-1" :class="{
-              correct: currentRecordAnswer === option.name && currentRecordAnswer === currentRecordQuestionAnswer,
-              error: currentRecordAnswer === option.name && currentRecordAnswer !== currentRecordQuestionAnswer
-            }">{{option.name}}: {{option.value}}</div>
+              'my-select': currentRecordAnswer === option.name,
+              'opponent-select': currentOpponentRecordAnswer === option.name,
+            }">{{option.name}}: {{option.value}}
+              <icon v-if="option.name === currentRecordQuestionAnswer" name="check" class="correct" scale="1"></icon>
+            </div>
           </div>
         </div>
         <div class="switch" @click="switchRecord(1)" :class="{hidden: currentRecordIndex === (this.questions.length - 1)}">
@@ -105,6 +108,13 @@
         <md-button :disabled="uploading" class="md-primary" @click="showRecord()">查看本次对战回顾</md-button>
       </md-dialog-actions>
     </md-dialog>
+    <md-dialog :md-active.sync="quiting" :md-fullscreen="false">
+      <md-dialog-title>确定要直接返回放弃比赛吗？</md-dialog-title>
+      <md-dialog-actions>
+        <md-button class="md-accent" @click="goBack()">放弃比赛</md-button>
+        <md-button class="md-primary" @click="quiting = false">继续比赛</md-button>
+      </md-dialog-actions>
+    </md-dialog>
   </div>
 </template>
 
@@ -123,6 +133,15 @@ export default {
         }
       }
       return false;
+    },
+    currentOpponentRecordAnswer () {
+      if (this.opponent && this.opponent.answers && this.questions && this.questions[this.currentRecordIndex]) {
+        const answer = this.opponent.answers.find(a => a.questionId === this.questions[this.currentRecordIndex].questionId);
+        if (answer) {
+          return answer.answer;
+        }
+      }
+      return false;
     }
   },
   data: () => ({
@@ -134,11 +153,13 @@ export default {
     chapterName: '',
     waitMsg: '正在等待你的对手进入房间……',
     waiting: true,
+    quiting: false,
     currentQuestion:  '',
     currentOptions: [],
     currentQuestionIndex: 0,
     myRightCount: 0,
     opponentRightCount: 0,
+    questions: [],
     snackMsg: '',
     showSnackbar: false,
     result: false,
@@ -184,7 +205,7 @@ export default {
       this.currentRecordOptions = this.questions[this.currentRecordIndex].options;
       this.currentRecordQuestionAnswer = this.questions[this.currentRecordIndex].answer;
       this.waiting = false;
-      this.startTimer();
+//      this.startTimer();
     });
 
     // 对手答题时判断是否正确并记录对手答案
@@ -259,6 +280,13 @@ export default {
         }
       }, 1000);
     },
+    showQuiting () {
+      if (!this.isOver) {
+        this.quiting = true;
+      } else {
+        this.goBack();
+      }
+    },
     goBack () {
       this.$router.back();
     },
@@ -323,6 +351,8 @@ export default {
 <style lang="scss" scoped>
   @import "~vue-material/dist/theme/engine";
   $yellow-color: md-get-palette-color(yellow, A400);
+  $my-color: md-get-palette-color(red, A200);
+  $opponent-color: md-get-palette-color(blue, 300);
 
   .header {
     padding: 10px 8px 0;
@@ -344,6 +374,15 @@ export default {
       display: flex;
       justify-content: space-between;
 
+      .user-name {
+        display: block;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        max-width: 94px;
+        box-sizing: border-box;
+        padding: 0 3px;
+      }
+
       .avatar {
         padding: 5px;
       }
@@ -355,12 +394,13 @@ export default {
           text-align: center;
           line-height: 74px;
           color: $yellow-color;
+          margin: auto;
         }
       }
 
       .me {
         .avatar {
-          background-color: md-get-palette-color(red, A200);
+          background-color: $my-color;
           padding-left: 25px;
           border-bottom-right-radius: 50px;
           border-top-right-radius: 50px;
@@ -369,7 +409,7 @@ export default {
 
       .opponent {
         .avatar {
-          background-color: md-get-palette-color(blue, 300);
+          background-color: $opponent-color;
           padding-right: 25px;
           border-bottom-left-radius: 50px;
           border-top-left-radius: 50px;
@@ -424,6 +464,12 @@ export default {
       }
     }
 
+    .question {
+      font-size: 16px;
+      margin: 10px 0 25px;
+      line-height: 25px;
+    }
+
     .tips {
       font-size: 12px;
     }
@@ -441,13 +487,22 @@ export default {
         border-radius: 3px;
         color: rgba(0, 0, 0, 0.87);
         word-break: break-all;
+        position: relative;
 
-        &.correct {
-          background-color: rgba(0, 224, 0, 0.87);
+        .correct {
+          color: rgba(0, 224, 0, 0.87);
+          position: absolute;
+          right: -24px;
+          top: 50%;
+          transform: translateY(-50%);
         }
 
-        &.error {
-          background-color: #f7943e;
+        &.my-select {
+          background-color: $my-color;
+        }
+
+        &.opponent-select {
+          background-color: $opponent-color;
         }
       }
     }

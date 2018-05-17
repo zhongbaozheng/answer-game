@@ -2,7 +2,7 @@
   <md-card class="md-primary">
     <md-card-content>
       <md-avatar class="md-large">
-        <img src="@/assets/logo.png" alt="Avatar">
+        <img src="@/assets/avatar.jpg" alt="Avatar">
       </md-avatar>
       <div class="name">{{user.nickname}}</div>
       <!--<div class="level">-->
