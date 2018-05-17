@@ -80,10 +80,17 @@
           <p class="tips" v-if="!currentOpponentRecordAnswer || currentOpponentRecordAnswer === 'no'">本题对手未选择答案</p>
           <div class="answers">
             <div v-for="option in currentRecordOptions" class="answer-option md-elevation-1" :class="{
-              'my-select': currentRecordAnswer === option.name,
-              'opponent-select': currentOpponentRecordAnswer === option.name,
+              'correct': option.name === currentRecordQuestionAnswer,
+              'error': currentRecordAnswer === option.name || currentOpponentRecordAnswer === option.name,
             }">{{option.name}}: {{option.value}}
-              <icon v-if="option.name === currentRecordQuestionAnswer" name="check" class="correct" scale="1"></icon>
+              <template v-if="currentRecordAnswer === option.name">
+                <icon v-if="option.name === currentRecordQuestionAnswer" name="check-circle" class="select my-select" scale="1"></icon>
+                <icon v-else="" name="times-circle" class="select my-select" scale="1"></icon>
+              </template>
+              <template v-if="currentOpponentRecordAnswer === option.name">
+                <icon v-if="option.name === currentRecordQuestionAnswer" name="check-circle" class="select opponent-select" scale="1"></icon>
+                <icon v-else="" name="times-circle" class="select opponent-select" scale="1"></icon>
+              </template>
             </div>
           </div>
         </div>
@@ -489,20 +496,27 @@ export default {
         word-break: break-all;
         position: relative;
 
-        .correct {
-          color: rgba(0, 224, 0, 0.87);
+        .select {
           position: absolute;
-          right: -24px;
           top: 50%;
           transform: translateY(-50%);
+          color: #fff;
+
+          &.my-select {
+            left: 5px;
+          }
+
+          &.opponent-select {
+            right: -5px;
+          }
         }
 
-        &.my-select {
-          background-color: $my-color;
+        &.error {
+          background-color: rgb(255, 110, 96);
         }
 
-        &.opponent-select {
-          background-color: $opponent-color;
+        &.correct {
+          background-color: rgb(0, 226, 188);
         }
       }
     }
