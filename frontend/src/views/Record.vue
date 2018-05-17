@@ -26,13 +26,13 @@
         </md-table-row>
         <md-table-row v-for="session in sessions" :key="session.sessionid">
           <md-table-head md-numeric>{{session.sessionid}}</md-table-head>
-          <md-table-head md-numeric>
-          <span class="fight-time">{{moment.unix(parseInt(session.fighttime)).format('YYYY-MM-DD')}}
-          </span>
-          <span class="fight-time">{{moment.unix(parseInt(session.fighttime)).format('hh:mm:ss')}}
-          </span>
+          <md-table-head md-numeric>{{moment.unix(parseInt(session.fighttime)).format('YYYY-MM-DD hh:mm:ss')}}
           </md-table-head>
-          <md-table-head>{{session.bool}}</md-table-head>
+          <md-table-head>
+            <span v-if="session.bool === 0">平局</span>
+            <span v-if="session.bool === 1" class="victory">胜利</span>
+            <span v-if="session.bool === 2" class="failure">失败</span>
+          </md-table-head>
           <md-table-head>{{session.users.userOne === $store.state.user.nickname ? session.users.userTwo: session.users.userOne}}
           </md-table-head>
           <icon name="angle-right" scale="1"></icon>
@@ -137,5 +137,13 @@ export default {
     height: 56px;
     line-height: 56px;
     margin-right: 10px;
+  }
+
+  .victory {
+    color: #44D31F;
+  }
+
+  .failure {
+    color: red;
   }
 </style>
