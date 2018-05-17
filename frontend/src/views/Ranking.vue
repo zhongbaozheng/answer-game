@@ -10,43 +10,51 @@
         <md-table-row v-if="myRanking && parseInt(myRanking.rank) == 1" class="my-rank">
           <md-table-head md-numeric><span class="first-rank-position">{{myRanking.rank}}</span></md-table-head>
           <md-table-head><span class="first-rank-content">{{myRanking.nickname}}</span></md-table-head>
-          <md-table-head><span class="first-rank-content">答题数：{{myRanking.totalQuesstion}}</span></md-table-head>
+          <md-table-head><span class="first-rank-content">胜场：{{myRanking.accuacy}}</span></md-table-head>
+          <md-table-head><span class="first-rank-content">总场次：{{myRanking.totalSession}}</span></md-table-head>
         </md-table-row>
         <md-table-row v-else-if="myRanking && parseInt(myRanking.rank) == 2" class="my-rank">
           <md-table-head md-numeric><span class="second-rank-position">{{myRanking.rank}}</span></md-table-head>
           <md-table-head><span class="second-rank-content">{{myRanking.nickname}}</span></md-table-head>
-          <md-table-head><span class="second-rank-content">答题数：{{myRanking.totalQuesstion}}</span></md-table-head>
+          <md-table-head><span class="second-rank-content">胜场：{{myRanking.accuacy}}</span></md-table-head>
+          <md-table-head><span class="second-rank-content">总场次：{{myRanking.totalSession}}</span></md-table-head>
         </md-table-row>
         <md-table-row v-else-if="myRanking && parseInt(myRanking.rank) == 3" class="my-rank">
           <md-table-head md-numeric><span class="third-rank-position">{{myRanking.rank}}</span></md-table-head>
           <md-table-head><span class="third-rank-content">{{myRanking.nickname}}</span></md-table-head>
-          <md-table-head><span class="third-rank-content">答题数：{{myRanking.totalQuesstion}}</span></md-table-head>
+          <md-table-head><span class="third-rank-content">胜场：{{myRanking.accuacy}}</span></md-table-head>
+          <md-table-head><span class="third-rank-content">总场次：{{myRanking.totalSession}}</span></md-table-head>
         </md-table-row>
         <md-table-row v-else-if="myRanking && parseInt(myRanking.rank) > 3" class="my-rank">
-          <md-table-head md-numeric><span class="third-rank-position">{{myRanking.rank}}</span></md-table-head>
-          <md-table-head><span class="third-rank-content">{{myRanking.nickname}}</span></md-table-head>
-          <md-table-head><span class="third-rank-content">答题数：{{myRanking.totalQuesstion}}</span></md-table-head>
+          <md-table-head md-numeric><span class="my-rank-position">{{myRanking.rank}}</span></md-table-head>
+          <md-table-head><span class="my-rank-content">{{myRanking.nickname}}</span></md-table-head>
+          <md-table-head><span class="my-rank-content">胜场：{{myRanking.accuacy}}</span></md-table-head>
+          <md-table-head><span class="my-rank-content">总场次：{{myRanking.totalSession}}</span></md-table-head>
         </md-table-row>
         <template v-for="(ranking, index) in theirRanking">
           <md-table-row v-if="index == 0">
             <md-table-head md-numeric><span class="first-rank-position">{{ranking.rank}}</span></md-table-head>
             <md-table-head><span class="first-rank-content">{{ranking.nickname}}</span></md-table-head>
-            <md-table-head><span class="first-rank-content">答题数：{{ranking.totalQuesstion}}</span></md-table-head>
+            <md-table-head><span class="first-rank-content">胜场：{{ranking.accuacy}}</span></md-table-head>
+            <md-table-head><span class="first-rank-content">总场次：{{ranking.totalSession}}</span></md-table-head>
           </md-table-row>
           <md-table-row v-else-if="index == 1">
             <md-table-head md-numeric><span class="second-rank-position">{{ranking.rank}}</span></md-table-head>
             <md-table-head><span class="second-rank-content">{{ranking.nickname}}</span></md-table-head>
-            <md-table-head><span class="second-rank-content">答题数：{{ranking.totalQuesstion}}</span></md-table-head>
+            <md-table-head><span class="second-rank-content">胜场：{{ranking.accuacy}}</span></md-table-head>
+            <md-table-head><span class="second-rank-content">总场次：{{ranking.totalSession}}</span></md-table-head>
           </md-table-row>
           <md-table-row v-else-if="index == 2">
             <md-table-head md-numeric><span class="third-rank-position">{{ranking.rank}}</span></md-table-head>
             <md-table-head><span class="third-rank-content">{{ranking.nickname}}</span></md-table-head>
-            <md-table-head><span class="third-rank-content">答题数：{{ranking.totalQuesstion}}</span></md-table-head>
+            <md-table-head><span class="third-rank-content">胜场：{{ranking.accuacy}}</span></md-table-head>
+            <md-table-head><span class="third-rank-content">总场次：{{ranking.totalSession}}</span></md-table-head>
           </md-table-row>
           <md-table-row v-else>
             <md-table-head md-numeric><span class="other-rank-position">{{ranking.rank}}</span></md-table-head>
             <md-table-head><span class="other-rank-content">{{ranking.nickname}}</span></md-table-head>
-            <md-table-head><span class="other-rank-content">答题数：{{ranking.totalQuesstion}}</span></md-table-head>
+            <md-table-head><span class="other-rank-content">胜场：{{ranking.accuacy}}</span></md-table-head>
+            <md-table-head><span class="other-rank-content">总场次：{{ranking.totalSession}}</span></md-table-head>
           </md-table-row>
         </template>
       </md-table>

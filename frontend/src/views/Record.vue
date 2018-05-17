@@ -19,14 +19,23 @@
       <md-divider></md-divider>
       <md-table>
         <md-table-row>
-          <md-table-head md-numeric>作答时间</md-table-head>
-          <md-table-head>题目名称</md-table-head>
-          <md-table-head>次数</md-table-head>
+          <md-table-head md-numeric>场次号</md-table-head>
+          <md-table-head md-numeric>对战时间</md-table-head>
+          <md-table-head>对战结果</md-table-head>
+          <md-table-head>对手</md-table-head>
         </md-table-row>
-        <md-table-row v-for="question in questionRecord">
-          <md-table-head md-numeric>{{moment.unix(parseInt(question.answertime)).fromNow()}}</md-table-head>
-          <md-table-head>{{question.question}}</md-table-head>
-          <md-table-head>{{question.count}}</md-table-head>
+        <md-table-row v-for="session in sessions" :key="session.sessionid">
+          <md-table-head md-numeric>{{session.sessionid}}</md-table-head>
+          <md-table-head md-numeric>
+          <span class="fight-time">{{moment.unix(parseInt(session.fighttime)).format('YYYY-MM-DD')}}
+          </span>
+          <span class="fight-time">{{moment.unix(parseInt(session.fighttime)).format('hh:mm:ss')}}
+          </span>
+          </md-table-head>
+          <md-table-head>{{session.bool}}</md-table-head>
+          <md-table-head>{{session.users.userOne === $store.state.user.nickname ? session.users.userTwo: session.users.userOne}}
+          </md-table-head>
+          <icon name="angle-right" scale="1"></icon>
         </md-table-row>
       </md-table>
     </md-card>
@@ -42,7 +51,7 @@ export default {
   components: {PersonCard},
   name: 'record',
   data: () => ({
-    questionRecord: [],
+    sessions: [],
     totalQuesstion: '0',
     totalSession: '0',
     moment
@@ -51,7 +60,7 @@ export default {
     this.$http.post('/user/getUserGains', {
       uid: this.$store.state.user.uid
     }).then(data => {
-      this.questionRecord = data.questionRecord;
+      this.sessions = data.sessions;
       this.totalQuesstion = data.totalQuesstion;
       this.totalSession = data.totalSession;
     });
@@ -64,7 +73,7 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
   .record {
     height: 100%;
   }
@@ -102,5 +111,31 @@ export default {
     .md-table-head {
       max-width: 20vw;
     }
+  }
+
+  .md-table-head-container {
+    text-align: center;
+    padding: 0;
+    height: 56px;
+  }
+
+  .fight-time {
+    margin: 0;
+  }
+
+  .md-table-head-label {
+    padding: 0 10px;
+    height: 56px;
+    line-height: 56px;
+  }
+
+  .md-table-head:last-child .md-table-head-label {
+    padding-right: 10px;
+  }
+
+  .fa-icon {
+    height: 56px;
+    line-height: 56px;
+    margin-right: 10px;
   }
 </style>
