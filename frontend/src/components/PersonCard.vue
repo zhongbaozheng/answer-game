@@ -2,7 +2,8 @@
   <md-card class="md-primary">
     <md-card-content>
       <md-avatar class="md-large">
-        <img src="@/assets/avatar.jpg" alt="Avatar">
+        <img v-if="user.avatarurl" :src="user.avatarurl" alt="Avatar">
+        <img v-else="" src="@/assets/avatar.jpg" alt="Avatar">
       </md-avatar>
       <div class="name">{{user.nickname}}</div>
       <!--<div class="level">-->

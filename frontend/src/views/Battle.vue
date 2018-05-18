@@ -9,7 +9,8 @@
         <div v-if="me" class="me">
           <div class="avatar">
             <md-avatar class="md-large">
-              <img src="@/assets/avatar.jpg" alt="Avatar">
+              <img v-if="me.avatarurl" :src="me.avatarurl" alt="Avatar">
+              <img v-else="" src="@/assets/avatar.jpg" alt="Avatar">
             </md-avatar>
           </div>
           <span class="user-name">{{me.userName}}</span>
@@ -21,7 +22,8 @@
         <div v-if="opponent" class="opponent">
           <div class="avatar">
             <md-avatar class="md-large">
-              <img src="@/assets/avatar.jpg" alt="Avatar">
+              <img v-if="opponent.avatarurl" :src="opponent.avatarurl" alt="Avatar">
+              <img v-else="" src="@/assets/avatar.jpg" alt="Avatar">
             </md-avatar>
           </div>
           <span>{{opponent.userName}}</span>
@@ -53,7 +55,8 @@
         <div v-if="me" class="me">
           <div class="avatar">
             <md-avatar class="md-large">
-              <img src="@/assets/avatar.jpg" alt="Avatar">
+              <img v-if="me.avatarurl" :src="me.avatarurl" alt="Avatar">
+              <img v-else="" src="@/assets/avatar.jpg" alt="Avatar">
             </md-avatar>
           </div>
           <span>{{me.userName}}</span>
@@ -64,7 +67,8 @@
         <div v-if="opponent" class="opponent">
           <div class="avatar">
             <md-avatar class="md-large">
-              <img src="@/assets/avatar.jpg" alt="Avatar">
+              <img v-if="opponent.avatarurl" :src="opponent.avatarurl" alt="Avatar">
+              <img v-else="" src="@/assets/avatar.jpg" alt="Avatar">
             </md-avatar>
           </div>
           <span>{{opponent.userName}}</span>
