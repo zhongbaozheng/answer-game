@@ -39,7 +39,7 @@
         <div class="md-layout-item">
           <p class="question">{{currentQuestion}}</p>
           <div class="answers">
-            <div v-for="option in currentOptions" @click="select(option)" class="answer-option md-elevation-1">{{option.name}}: {{option.value}}</div>
+            <div v-for="(option, index) in currentOptions" @click="select(option, index)" class="answer-option md-elevation-1" :class="{'correct': selected !== -1 && option.name === currentRecordQuestionAnswer,'error': selected == index && option.name !== currentRecordQuestionAnswer}">{{option.name}}: {{option.value}}</div>
           </div>
         </div>
         <div class="counter">
@@ -177,13 +177,15 @@ export default {
     resultMsg: '',
     uploading: false,
     time: 10,
+    timeout: null,
     timer: null,
     isOver: false,
     showingRecord: false,
     currentRecordQuestion: '',
     currentRecordOptions: [],
     currentRecordQuestionAnswer: '',
-    currentRecordIndex: 0
+    currentRecordIndex: 0,
+    selected: -1,
   }),
   mounted () {
     // 取得对战相关信息
@@ -291,6 +293,9 @@ export default {
         }
       }, 1000);
     },
+    startTimeout () {
+
+    },
     showQuiting () {
       if (!this.isOver) {
         this.quiting = true;
@@ -325,7 +330,7 @@ export default {
         this.result = true;
       }
     },
-    select (option) {
+    select (option, index) {
       this.me.answers = this.me.answers || [];
       const answer = { questionId: this.questions[this.currentQuestionIndex].questionId, answer: option.name };
       this.me.answers.push(answer);
@@ -334,16 +339,21 @@ export default {
         this.myRightCount++;
         this.showSnackBarMethod('你答对了~~');
       }
+      this.selected = index
       this.currentQuestionIndex++;
       if (this.currentQuestionIndex < this.questions.length) {
-        this.currentQuestion = this.questions[this.currentQuestionIndex].question;
-        this.currentOptions = this.questions[this.currentQuestionIndex].options;
-        this.startTimer();
+        if (this.timeout) window.clearTimeout(this.timeout);
+        this.timeout = window.setTimeout(function() {
+          this.currentQuestion = this.questions[this.currentQuestionIndex].question;
+          this.currentOptions = this.questions[this.currentQuestionIndex].options;
+          this.startTimer();
+        },2000)
       } else {
-        this.playRoom.emit('finish', {userId: this.$store.state.user.uid});
-        this.showWaitingMethod('你已完成答题，请等待对手完成');
         if (this.timer) window.clearInterval(this.timer);
+        vm.playRoom.emit('finish', {userId: vm.$store.state.user.uid});
+        vm.showWaitingMethod('你已完成答题，请等待对手完成');
       }
+      this.selected = -1;
     },
     showRecord () {
       this.showingRecord = true;

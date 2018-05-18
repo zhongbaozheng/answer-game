@@ -5,7 +5,7 @@
       <span class="text">战绩</span>
     </div>
     <person-card></person-card>
-    <md-card style="over-flow: auto; height: 58%; border-radius: 10px;">
+    <md-card style="over-flow: auto; height: 58%; border-radius: 10px;background: #4A7BCF;">
       <md-content class="record-stats md-layout md-alignment-center-space-around">
         <div class="stat">
           <div class="data">{{totalQuesstion}}</div>
@@ -163,6 +163,7 @@ export default {
     text-align: center;
     padding: 0;
     height: 56px;
+    color: white;
   }
 
   .fight-time {
@@ -170,13 +171,13 @@ export default {
   }
 
   .md-table-head-label {
-    padding: 0 5px;
+    padding: 0 3px;
     height: 56px;
     line-height: 56px;
   }
 
   .md-table-head:last-child .md-table-head-label {
-    padding-right: 5px;
+    padding-right: 3px;
   }
 
   .fa-icon {
@@ -190,10 +191,23 @@ export default {
   }
 
   .failure {
-    color: red;
+    color: #F97B98;
   }
 
   .header-title {
     font-size: 15px;
+  }
+
+  .md-content.record-stats.md-layout.md-alignment-center-space-around.md-theme-default,.md-content.md-table-content.md-scrollbar.md-theme-default,.md-dialog-container{
+    background: #4A7BCF;
+    color: white;
+  }
+
+  .md-button-content {
+    color: white;
+  }
+
+  .md-table-head-container {
+    font-size: 14px;
   }
 </style>

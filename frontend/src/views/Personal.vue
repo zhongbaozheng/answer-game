@@ -10,11 +10,12 @@
           <img v-if="avatarurl" :src="avatarurl" alt="Avatar">
           <img v-else="" src="@/assets/avatar.jpg" alt="Avatar">
         </md-avatar>
+        <p style="margin-top: 10px;">{{ this.$store.state.user.nickname }}</p>
         <div class="md-layout md-size-75 md-alignment-center">
-          <md-field class="md-layout-item md-size-75">
+          <!-- <md-field class="md-layout-item md-size-75">
             <label>姓名</label>
             <md-input v-model="nickname"></md-input>
-          </md-field>
+          </md-field> -->
           <md-field class="md-layout-item md-size-75">
             <label>原密码</label>
             <md-input v-model="oldPassword" type="password"></md-input>

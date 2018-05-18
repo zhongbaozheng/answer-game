@@ -128,9 +128,9 @@ export default {
   .my-rank-position {
     background: #656566;
     display: inline-block;
-    width: 15px;
-    height: 15px;
-    line-height: 15px;
+    width: 25px;
+    height: 25px;
+    line-height: 25px;
     text-align: center;
     color: white;
     border-radius: 50%;
@@ -138,29 +138,31 @@ export default {
 
   .my-rank-content {
     color: #656566;
+    font-size: 14px;
   }
 
   .first-rank-position {
-    background: #FC2272;
+    background: #F97B98;
     display: inline-block;
-    width: 15px;
-    height: 15px;
-    line-height: 15px;
+    width: 25px;
+    height: 25px;
+    line-height: 25px;
     text-align: center;
     color: white;
     border-radius: 50%;
   }
 
   .first-rank-content {
-    color: #FC2272;
+    color: #F97B98;
+    font-size: 14px;
   }
 
   .second-rank-position {
     background: #FFA127;
     display: inline-block;
-    width: 15px;
-    height: 15px;
-    line-height: 15px;
+    width: 25px;
+    height: 25px;
+    line-height: 25px;
     text-align: center;
     color: white;
     border-radius: 50%;
@@ -168,14 +170,15 @@ export default {
 
   .second-rank-content {
     color: #FFA127;
+    font-size: 14px;
   }
 
   .third-rank-position {
     background: #44D31F;
     display: inline-block;
-    width: 15px;
-    height: 15px;
-    line-height: 15px;
+    width: 25px;
+    height: 25px;
+    line-height: 25px;
     text-align: center;
     color: white;
     border-radius: 50%;
@@ -183,22 +186,24 @@ export default {
 
   .third-rank-content {
     color: #44D31F;
+    font-size: 14px;
   }
 
   .other-rank-position {
     background: transparent;
     display: inline-block;
-    width: 15px;
-    height: 15px;
-    line-height: 15px;
+    width: 25px;
+    height: 25px;
+    line-height: 25px;
     text-align: center;
-    color: #656566;
+    color: white;
     border-radius: 50%;
-    border: 1px solid #656566;
+    border: 1px solid white;
   }
 
   .other-rank-content {
-    color: #656566;
+    color: white;
+    font-size: 14px;
   }
 
   .md-content.md-table.md-theme-default {
