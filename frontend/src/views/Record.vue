@@ -48,7 +48,7 @@
           <md-table-head><span class="header-title">对手答案</span></md-table-head>
           <md-table-head><span class="header-title">正确答案</span></md-table-head>
         </md-table-row>
-        <md-table-row v-for="question in currentDetail">
+        <md-table-row v-for="(question, index) in currentDetail" :key="index">
           <md-table-head>{{question.question}}</md-table-head>
           <md-table-head>
             <span v-if="detailPlayer === 1" :class="[question.answerOne === question.right ? 'victory' : 'failure']">

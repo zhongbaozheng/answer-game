@@ -8,6 +8,7 @@ import Battle from './views/Battle.vue';
 import Record from './views/Record.vue';
 import Personal from './views/Personal.vue';
 import Ranking from './views/Ranking.vue';
+import ModeChosen from './views/ModeChosen.vue';
 
 Vue.use(Router);
 
@@ -52,6 +53,11 @@ export default new Router({
       path: '/ranking',
       name: 'ranking',
       component: Ranking,
+    },
+    {
+      path: '/mode-chosen',
+      name: 'mode-chosen',
+      component: ModeChosen,
     },
   ],
 });
