@@ -4,13 +4,18 @@
       <icon name="angle-left" scale="2"></icon>
       <span class="text">双人对战</span>
     </div>
-    <md-button v-on:click="test()" class="md-raised md-primary md-layout-item md-size-75">测试</md-button>
-    <md-button @click="fight()" class="md-raised md-primary md-layout-item md-size-75">对战</md-button>
+    <person-card></person-card>
+    <img id="test" src="../assets/test_bg.png" class="md-raised md-primary link" @click="test()" />
+    <img id="fight" src="../assets/fight_bg.png" class="md-raised md-primary link" @click="fight()" />
   </div>
 </template>
 <script>
+import PersonCard from '@/components/PersonCard.vue';
 export default {
   name: 'mode-chosen',
+  components: {
+      PersonCard
+  },
   methods: {
     fight () {
     	this.$router.push({path: '/topic-chosen'})
@@ -59,4 +64,16 @@ export default {
 .md-button {
     margin: 6px 8px;
 }
+
+.link {
+  width: calc(100% - 16px);
+  margin: 5px 1%;
+  border-radius: 10px;
+  font-size: 18px;
+}
+
+#test, #fight {
+  width: 47%;
+}
+
 </style>
