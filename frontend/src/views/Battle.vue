@@ -39,7 +39,17 @@
         <div class="md-layout-item">
           <p class="question">{{currentQuestion}}</p>
           <div class="answers">
-            <div v-for="(option, index) in currentOptions" @click="select(option, index)" class="answer-option md-elevation-1" :class="{'correct': selected !== -1 && option.name === questions[currentQuestionIndex].answer,'error': selected == index && option.name !== questions[currentQuestionIndex].answer}">{{option.name}}: {{option.value}}</div>
+            <div v-for="(option, index) in currentOptions" @click="select(option, index)" class="answer-option md-elevation-1" :class="{'correct': ((currentMeAnswer === option.name) || (currentMeAnswer && currentOpponentAnswer)) && option.name === questions[currentQuestionIndex].answer,'error': (currentMeAnswer === option.name || (currentMeAnswer && currentOpponentAnswer == option.name)) && option.name !== questions[currentQuestionIndex].answer}">
+              {{option.name}}: {{option.value}}
+              <template v-if="questions[currentQuestionIndex].answer === option.name">
+                <icon v-if="option.name === currentMeAnswer" name="check-circle" class="select my-select" scale="1"></icon>
+                <icon v-if="option.name === currentOpponentAnswer" name="check-circle" class="select opponent-select" scale="1"></icon>
+              </template>
+              <template v-else>
+                <icon v-if="option.name === currentMeAnswer" name="times-circle" class="select my-select" scale="1"></icon>
+                <icon v-if="option.name === currentOpponentAnswer" name="times-circle" class="select opponent-select" scale="1"></icon>
+              </template>
+            </div>
           </div>
         </div>
         <div class="counter">
@@ -89,11 +99,11 @@
             }">{{option.name}}: {{option.value}}
               <template v-if="currentRecordAnswer === option.name">
                 <icon v-if="option.name === currentRecordQuestionAnswer" name="check-circle" class="select my-select" scale="1"></icon>
-                <icon v-else="" name="times-circle" class="select my-select" scale="1"></icon>
+                <icon v-else name="times-circle" class="select my-select" scale="1"></icon>
               </template>
               <template v-if="currentOpponentRecordAnswer === option.name">
                 <icon v-if="option.name === currentRecordQuestionAnswer" name="check-circle" class="select opponent-select" scale="1"></icon>
-                <icon v-else="" name="times-circle" class="select opponent-select" scale="1"></icon>
+                <icon v-else name="times-circle" class="select opponent-select" scale="1"></icon>
               </template>
             </div>
           </div>
@@ -156,6 +166,7 @@ export default {
     }
   },
   data: () => ({
+    isDisabled: false,
     second: 10,
     me: null,
     opponent: null,
@@ -168,6 +179,8 @@ export default {
     currentQuestion:  '',
     currentOptions: [],
     currentQuestionIndex: 0,
+    currentMeAnswer: '',
+    currentOpponentAnswer: '',
     myRightCount: 0,
     opponentRightCount: 0,
     questions: [],
@@ -184,8 +197,7 @@ export default {
     currentRecordQuestion: '',
     currentRecordOptions: [],
     currentRecordQuestionAnswer: '',
-    currentRecordIndex: 0,
-    selected: -1,
+    currentRecordIndex: 0
   }),
   mounted () {
     // 取得对战相关信息
@@ -225,11 +237,27 @@ export default {
     playRoom.on('opponentAnswer', ({ questionId, answer }) => {
       this.opponent.answers = this.opponent.answers || [];
       this.opponent.answers.push({ questionId, answer });
+      this.currentOpponentAnswer = answer;
       const questionIndex = this.questions.findIndex(v => v.questionId === questionId);
       if (questionIndex !== -1) {
         if (this.questions[questionIndex].answer === answer) {
           this.opponentRightCount++;
           this.showSnackBarMethod('你的对手答对了一题！');
+        }
+      }
+      if (this.currentQuestionIndex < this.questions.length - 1) {
+        if (this.currentMeAnswer) {
+          if (this.timeout) window.clearTimeout(this.timeout);
+          // 延时1秒再跳到下一题
+          this.timeout = window.setTimeout(() => {
+            this.currentQuestionIndex++;
+            this.currentQuestion = this.questions[this.currentQuestionIndex].question;
+            this.currentOptions = this.questions[this.currentQuestionIndex].options;
+            this.currentMeAnswer = '';
+            this.currentOpponentAnswer = '';
+            this.isDisabled = false;
+            this.startTimer();
+          },1000)
         }
       }
     });
@@ -245,7 +273,7 @@ export default {
       if (this.waiting) {
         this.waiting = false;
       }
-
+      if (this.timer) window.clearInterval(this.timer);
       if (opponentQuit === true) {
         this.showQuitResult();
         // 落荒而逃给后台的判断标识
@@ -260,7 +288,6 @@ export default {
       } else {
         this.showResult();
       }
-
       if (requestUserId === this.$store.state.user.uid) {
         this.uploading = true;
         this.$http.post('/brain/saveAnswers', {
@@ -289,6 +316,14 @@ export default {
       this.playRoom.disconnect(true)
     }
   },
+  beforeRouteEnter (from, to, next) {
+    if (!to.name) { // 刷新重定向
+      next(vm => {
+        vm.$router.go(-2);
+      })
+    }
+    next();
+  },
   methods: {
     // 倒计时
     startTimer () {
@@ -298,7 +333,7 @@ export default {
         this.time--;
         if(this.time === 0) {
           window.clearInterval(this.timer);
-          this.select({name: 'no'}, -2);
+          this.select({name: 'no'});
         }
       }, 1000);
     },
@@ -336,8 +371,11 @@ export default {
         this.result = true;
       }
     },
-    select (option, index) {
+    select (option) {
+      if (this.isDisabled) return; // 用户已选择答案后，防止再点击
       this.me.answers = this.me.answers || [];
+      this.currentMeAnswer = option.name;
+      this.isDisabled = true;
       const answer = { questionId: this.questions[this.currentQuestionIndex].questionId, answer: option.name };
       this.me.answers.push(answer);
       this.playRoom.emit('answer', answer);
@@ -345,23 +383,22 @@ export default {
         this.myRightCount++;
         this.showSnackBarMethod('你答对了~~');
       }
-      // 显示选中选项颜色和正确答案
-      this.selected = index
       if (this.currentQuestionIndex < this.questions.length - 1) {
-        console.log(this.selected)
-        if (this.timeout) window.clearTimeout(this.timeout);
-        // 延时1秒再跳到下一题
-        this.timeout = window.setTimeout(() => {
-          this.currentQuestionIndex++;
-          this.currentQuestion = this.questions[this.currentQuestionIndex].question;
-          this.currentOptions = this.questions[this.currentQuestionIndex].options;
-          this.selected = -1;
-          this.startTimer();
-        },1000)
+        if (this.currentOpponentAnswer) {
+          if (this.timeout) window.clearTimeout(this.timeout);
+          // 延时1秒再跳到下一题
+          this.timeout = window.setTimeout(() => {
+            this.currentQuestionIndex++;
+            this.currentQuestion = this.questions[this.currentQuestionIndex].question;
+            this.currentOptions = this.questions[this.currentQuestionIndex].options;
+            this.currentMeAnswer = '';
+            this.currentOpponentAnswer = '';
+            this.isDisabled = false;
+            this.startTimer();
+          },1000)
+        }
       } else {
-        if (this.timer) window.clearInterval(this.timer);
         this.playRoom.emit('finish', {userId: this.$store.state.user.uid});
-        this.showWaitingMethod('你已完成答题，请等待对手完成');
       }
     },
     showRecord () {
@@ -374,7 +411,7 @@ export default {
       this.currentRecordOptions = this.questions[this.currentRecordIndex].options;
       this.currentRecordQuestionAnswer = this.questions[this.currentRecordIndex].answer;
     }
-  },
+  }
 };
 </script>
 
