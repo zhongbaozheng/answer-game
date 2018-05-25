@@ -32,9 +32,9 @@
       <div class="md-layout">
         <div class="counter">
           <div class="bar">
-            <div class="fill" :style="{height: `${myRightCount / questions.length * 100}%`}"></div>
+            <div class="fill" :style="{height: `${ myHeight }%`}"></div>
           </div>
-          <div>{{myRightCount}}/{{questions.length}}</div>
+          <div>{{myScore}}</div>
         </div>
         <div class="md-layout-item">
           <p class="question">{{currentQuestion}}</p>
@@ -54,9 +54,9 @@
         </div>
         <div class="counter">
           <div class="bar">
-            <div class="fill" :style="{height: `${opponentRightCount / questions.length * 100}%`}"></div>
+            <div class="fill" :style="{height: `${ opponentHeight }%`}"></div>
           </div>
-          <div>{{opponentRightCount}}/{{questions.length}}</div>
+          <div>{{opponentScore}}</div>
         </div>
       </div>
     </div>
@@ -183,6 +183,10 @@ export default {
     currentOpponentAnswer: '',
     myRightCount: 0,
     opponentRightCount: 0,
+    opponentHeight: 0,
+    myHeight: 0,
+    opponentScore: 0,
+    myScore: 0,
     questions: [],
     snackMsg: '',
     showSnackbar: false,
@@ -242,6 +246,8 @@ export default {
       if (questionIndex !== -1) {
         if (this.questions[questionIndex].answer === answer) {
           this.opponentRightCount++;
+          this.opponentHeight += this.time / this.questions.length * 20;
+          this.opponentScore += parseInt(20 * this.time);
           this.showSnackBarMethod('你的对手答对了一题！');
         }
       }
@@ -274,9 +280,12 @@ export default {
         this.waiting = false;
       }
       if (this.timer) window.clearInterval(this.timer);
+      let isMeWin = 0;
+      let isOpponentWin = 0;
       if (opponentQuit === true) {
         this.showQuitResult();
         // 落荒而逃给后台的判断标识
+        /*
         this.me.answers.push({
           questionId: '0',
           answer: '1'
@@ -285,7 +294,22 @@ export default {
           questionId: '0',
           answer: '0'
         });
+        */
+        isMeWin = 1;
+        isOpponentWin = 0;
       } else {
+        if (this.myScore > this.opponentScore) {
+          isMeWin = 1;
+          isOpponentWin = 0;
+        }
+        else if (this.myScore > this.opponentScore) {
+          isMeWin = 0;
+          isOpponentWin = 0;
+        }
+        else {
+          isMeWin = 0;
+          isOpponentWin = 1;
+        }
         this.showResult();
       }
       if (requestUserId === this.$store.state.user.uid) {
@@ -293,9 +317,13 @@ export default {
         this.$http.post('/brain/saveAnswers', {
           result : [{
             userId : this.me.uid,
-            answers : this.me.answers
+            userScore: this.myScore,
+            winner: isMeWin,
+            answers : this.me.answers,
           },{
             userId : this.opponent.uid,
+            userScore: this.opponentScore,
+            winner: isOpponentWin,
             answers : this.opponent.answers
           }]
         }).then(data => {
@@ -356,9 +384,9 @@ export default {
       this.waiting = true;
     },
     showResult () {
-      if (this.myRightCount > this.opponentRightCount) {
+      if (this.myScore > this.opponentScore) {
         this.resultMsg = `恭喜你战胜了 @${this.opponent.userName}。`;
-      } else if (this.myRightCount < this.opponentRightCount) {
+      } else if (this.myScore < this.opponentScore) {
         this.resultMsg = `很遗憾你被 @${this.opponent.userName} 打败了`;
       } else {
         this.resultMsg = `你跟 @${this.opponent.userName} 握手言和`;
@@ -381,6 +409,8 @@ export default {
       this.playRoom.emit('answer', answer);
       if (this.questions[this.currentQuestionIndex].answer === option.name) {
         this.myRightCount++;
+        this.myHeight += this.time / this.questions.length * 20;
+        this.myScore += parseInt(20 * this.time);
         this.showSnackBarMethod('你答对了~~');
       }
       if (this.currentQuestionIndex < this.questions.length - 1) {
@@ -486,8 +516,7 @@ export default {
 
     .counter {
       color: $yellow-color;
-      margin-top: 30px;
-
+      font-size: 22px;
       .bar {
         height: 60vh;
         width: 14px;
@@ -495,6 +524,7 @@ export default {
         background-color: rgba(0, 0, 0, .5);
         border-radius: 20px;
         margin: 10px;
+
 
         .fill {
           position: absolute;

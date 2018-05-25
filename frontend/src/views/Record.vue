@@ -40,7 +40,26 @@
       </md-table>
     </md-card>
     <md-dialog :md-active.sync="detail">
-      <md-dialog-title>战绩详情</md-dialog-title>
+      <md-dialog-title style="margin-bottom: 10px;">战绩详情</md-dialog-title>
+      <md-content class="record-stats md-layout md-alignment-center-space-around">
+        <div class="score">
+          <div class="data">{{ detailPlayer === 1 ? currentUserOneScore : currentUserTwoScore }}</div>
+          <div class="title">我的分数</div>
+        </div>
+        <div class="score">
+          <div class="data">{{detailPlayer === 1 ? currentUserTwoScore : currentUserOneScore }}</div>
+          <div class="title">对手分数</div>
+        </div>
+      </md-content>
+      <!-- <md-content class="margin-bottom-10 record-stats md-layout md-alignment-center-space-around">
+        <div class="score">
+          <div class="score">我的分数：{{ detailPlayer === 1 ? currentUserOneScore : currentUserTwoScore }}</div>
+        </div>
+        <div class="score">
+          <div class="title">对手分数：{{detailPlayer === 1 ? currentUserTwoScore : currentUserOneScore }}</div>
+        </div>
+      </md-content> -->
+      <md-divider></md-divider>
       <md-table>
         <md-table-row>
           <md-table-head><span class="header-title">问题</span></md-table-head>
@@ -90,6 +109,8 @@ export default {
     totalSession: '0',
     detail: false,
     detailPlayer: 0,
+    currentUserOneScore: 0,
+    currentUserTwoScore: 0,
     currentDetail: [],
     moment
   }),
@@ -113,6 +134,8 @@ export default {
         this.detailPlayer = 2;
       }
       this.currentDetail = session.details;
+      this.currentUserOneScore = session.users.userOneScore;
+      this.currentUserTwoScore = session.users.userTwoScore;
       this.detail = true;
     }
   },
@@ -170,6 +193,14 @@ export default {
     margin: 0;
   }
 
+  .score {
+    font-size: 15px;
+    text-align: center;
+    .data,.title {
+        margin-bottom: 6px;
+    }
+  }
+
   .md-table-head-label {
     padding: 0 3px;
     height: 56px;
@@ -209,5 +240,9 @@ export default {
 
   .md-table-head-container {
     font-size: 14px;
+  }
+
+  .margin-bottom-10 {
+    margin-bottom: 10px;
   }
 </style>
