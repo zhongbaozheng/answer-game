@@ -10,4 +10,4 @@ const PROD_CONFIG = {
 };
 
 
-export default DEV_CONFIG;
+export default PROD_CONFIG;

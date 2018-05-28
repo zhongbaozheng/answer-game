@@ -238,7 +238,7 @@ export default {
     });
 
     // 对手答题时判断是否正确并记录对手答案
-    playRoom.on('opponentAnswer', ({ questionId, answer }) => {
+    playRoom.on('opponentAnswer', ({ questionId, answer, currentScore }) => {
       this.opponent.answers = this.opponent.answers || [];
       this.opponent.answers.push({ questionId, answer });
       this.currentOpponentAnswer = answer;
@@ -246,8 +246,8 @@ export default {
       if (questionIndex !== -1) {
         if (this.questions[questionIndex].answer === answer) {
           this.opponentRightCount++;
-          this.opponentHeight += this.time / this.questions.length * 20;
-          this.opponentScore += parseInt(20 * this.time);
+          this.opponentHeight += this.time / this.questions.length * 10;
+          this.opponentScore += currentScore;
           this.showSnackBarMethod('你的对手答对了一题！');
         }
       }
@@ -406,13 +406,16 @@ export default {
       this.isDisabled = true;
       const answer = { questionId: this.questions[this.currentQuestionIndex].questionId, answer: option.name };
       this.me.answers.push(answer);
-      this.playRoom.emit('answer', answer);
+      let currentScore = 0
       if (this.questions[this.currentQuestionIndex].answer === option.name) {
         this.myRightCount++;
-        this.myHeight += this.time / this.questions.length * 20;
-        this.myScore += parseInt(20 * this.time);
+        this.myHeight += this.time / this.questions.length * 10;
+        currentScore = parseInt(20 * this.time);
+        this.myScore += currentScore;
         this.showSnackBarMethod('你答对了~~');
       }
+      answer.currentScore = currentScore;
+      this.playRoom.emit('answer', answer);
       if (this.currentQuestionIndex < this.questions.length - 1) {
         if (this.currentOpponentAnswer) {
           if (this.timeout) window.clearTimeout(this.timeout);
