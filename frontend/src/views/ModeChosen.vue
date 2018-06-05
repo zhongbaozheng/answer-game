@@ -1,8 +1,6 @@
 <template>
   <div class="mode-chosen">
-    <div @click="goBack()" class="header md-layout md-alignment-center-left">
-      <icon name="angle-left" scale="2"></icon>
-      <span class="text">双人对战</span>
+    <div class="header md-layout md-alignment-center-left">
     </div>
     <person-card></person-card>
     <img id="test" src="../assets/test_bg.png" class="md-raised md-primary link" @click="test()" />
@@ -22,10 +20,10 @@ export default {
     },
     test () {
       if (this.isMobile()) {
-        window.location.href = 'http://lol.qq.com';
+        window.location.href = 'http://web2.gtxy.cn:8080/jjgg/';
         return;
       }
-      window.location.href = 'https://www.baidu.com';
+      window.location.href = 'http://125.216.112.121:81/PCW/index.php/Home/Signin/signin.html';
     },
     goBack () {
       this.$router.back();
@@ -45,6 +43,14 @@ export default {
         return false;
       }
     }
+  },
+  beforeRouteEnter (from, to, next) {
+    document.title = '通信工成长记';
+    next();
+  },
+  beforeRouteLeave (from, to, next) {
+    document.title = '通信工知识竞技对战平台';
+    next();
   }
 };
 </script>
@@ -54,7 +60,7 @@ export default {
 }
 
 .header {
-	padding: 10px 8px 0;
+	padding: 50px 8px 0;
 	color: white;
 	.text {
 	    margin-left: 10px;

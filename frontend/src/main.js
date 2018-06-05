@@ -15,7 +15,7 @@ import config from './config';
 
 moment.locale('zh-cn');
 
-const whiteList = ['/login', '/register'];
+const whiteList = ['/login', '/register', '/mode-chosen'];
 router.beforeEach((to, from, next) => {
   if (!store.state.user && whiteList.indexOf(to.path) === -1) {
     next({ path: '/login' });
