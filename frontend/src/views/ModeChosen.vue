@@ -74,7 +74,7 @@ export default {
 .link {
   width: calc(100% - 16px);
   margin: 5px 1%;
-  border-radius: 10px;
+  border-radius: 14px;
   font-size: 18px;
 }
 
